@@ -9,7 +9,7 @@
 import pyartifactory
 import sys
 
-ARTIFACTORY_BASE_URL = "https://cura.jfrog.io/artifactory"
+ARTIFACTORY_BASE_URL = "https://artifacts.lulzbot.com/artifactory"
 
 if len(sys.argv) != 3:
     print("Usage: python sanitize_jfrog_artifactory.py USERNAME PASSWORD\n"
@@ -22,20 +22,20 @@ PASSWORD = sys.argv[2]
 def initialize_artifactory():
     return pyartifactory.Artifactory(url=ARTIFACTORY_BASE_URL, auth=(USERNAME, PASSWORD))
 
-ARTIFACT_PATHS = {"cura-conan-dev-local/ultimaker/curaengine"          : True,
-                  "cura-conan-dev-local/ultimaker/cura"                : True,
-                  "cura-conan-dev-local/ultimaker/fdm_printer"         : True,
-                  "cura-conan-dev-local/ultimaker/uranium"             : True,
-                  "cura-conan-dev-local/_/curaengine"                  : True,
-                  "cura-conan-dev-local/_/cura"                        : True,
-                  "cura-conan-dev-local/_/fdm_printer"                 : True,
-                  "cura-conan-dev-local/_/uranium"                     : True,
-                  "cura-conan-cci-remote-cache/ultimaker/curaengine"   : True,
-                  "cura-conan-cci-remote-cache/ultimaker/cura"         : True,
-                  "cura-conan-cci-remote-cache/ultimaker/fdm_printer"  : True,
-                  "cura-conan-cci-remote-cache/ultimaker/uranium"      : True,
+ARTIFACT_PATHS = {"cura-le/lulzbot/curaengine"                         : True,
+                  "cura-le/lulzbot/curale"                             : True,
+                  "cura-le/lulzbot/fdm_printer"                        : True,
+                  "cura-le/lulzbot/uranium"                            : True,
+                  "cura-le/_/curaengine"                               : True,
+                  "cura-le/_/cura"                                     : True,
+                  "cura-le/_/fdm_printer"                              : True,
+                  "cura-le/_/uranium"                                  : True,
+                  "cura-conan-cci-remote-cache/lulzbot/curaengine"     : True,
+                  "cura-conan-cci-remote-cache/lulzbot/cura"           : True,
+                  "cura-conan-cci-remote-cache/lulzbot/fdm_printer"    : True,
+                  "cura-conan-cci-remote-cache/lulzbot/uranium"        : True,
                   "cura-conan-cci-remote-cache/_/curaengine"           : True,
-                  "cura-conan-cci-remote-cache/_/cura"                 : True,
+                  "cura-conan-cci-remote-cache/_/curale"               : True,
                   "cura-conan-cci-remote-cache/_/fdm_printer"          : True,
                   "cura-conan-cci-remote-cache/_/uranium"              : True,
                   "cura_conan-cci-remote-cache"	                       : False}
