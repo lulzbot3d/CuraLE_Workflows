@@ -6,7 +6,7 @@ on:
     inputs:
       cura_conan_version:
         description: 'Cura Conan Version'
-        default: 'cura/latest@ultimaker/testing'
+        default: 'curale/latest@lulzbot/testing'
         required: true
         type: string
 
@@ -68,7 +68,7 @@ jobs:
           fetch-depth: 1
 
       - name: Sync pip requirements
-        run: wget https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/.github/workflows/requirements-runner.txt -O .github/workflows/requirements-runner.txt
+        run: wget https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/.github/workflows/requirements-runner.txt -O .github/workflows/requirements-runner.txt
 
       - name: Setup Python and pip
         uses: actions/setup-python@v4
@@ -84,11 +84,11 @@ jobs:
         run: |
           mkdir runner_scripts
           cd runner_scripts
-          curl -O https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/runner_scripts/ubuntu_setup.sh
+          curl -O https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/runner_scripts/ubuntu_setup.sh
           chmod +x ubuntu_setup.sh
           sudo ./ubuntu_setup.sh
           
-          curl -O https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/runner_scripts/appimage_setup.sh
+          curl -O https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/runner_scripts/appimage_setup.sh
           cd ..
           source ./runner_scripts/appimage_setup.sh
 
@@ -101,8 +101,8 @@ jobs:
 
       - name: Get Conan configuration
         run: |
-          conan config install https://github.com/Ultimaker/conan-config.git
-          conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
+          conan config install https://github.com/lulzbot3d/conan-config-le.git
+          conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
       - name: Add runner credentials to cura remote
         run: conan user -p ${{ secrets.CONAN_PASS }} -r cura ${{ secrets.CONAN_USER }}
@@ -110,7 +110,7 @@ jobs:
       - name: Add Cura private Artifactory remote
         if: ${{ inputs.conan_internal }}
         run: |
-          conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/internal"
+          conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"
           conan user -p ${{ secrets.CONAN_PASS }} -r cura-private ${{ secrets.CONAN_USER }}
 
       - name: Cache Conan downloads
@@ -133,12 +133,12 @@ jobs:
           . ./cura_inst/bin/activate_github_actions_version_env.sh            
 
       - name: Create the Cura dist
-        run: pyinstaller ./cura_inst/UltiMaker-Cura.spec
+        run: pyinstaller ./cura_inst/LulzBot-CuraLE.spec
 
       - name: Get installer helper scripts
         run: |
-          curl -O https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/runner_scripts/cura_installer_filename.py
-          curl -O https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/runner_scripts/summarize_used_dependencies.py
+          curl -O https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/runner_scripts/cura_installer_filename.py
+          curl -O https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/runner_scripts/summarize_used_dependencies.py
         working-directory: runner_scripts
 
       - name: Output the name file name and extension
@@ -150,7 +150,7 @@ jobs:
 
       - name: Create the Linux AppImage (Bash)
         run: |
-          python ../cura_inst/packaging/AppImage-builder/create_appimage.py ./UltiMaker-Cura $CURA_VERSION_FULL "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
+          python ../cura_inst/packaging/AppImage-builder/create_appimage.py ./LulzBot-CuraLE $CURA_VERSION_FULL "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
           chmod +x "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
         working-directory: dist
 
@@ -167,7 +167,7 @@ jobs:
 
       - name: Upload the Package(s)
         if: ${{ always() && ! inputs.conan_internal }}
-        run: conan upload "*" -r cura --all -c
+        run: conan upload "*" -r curale --all -c
 
       - name: Upload the AppImage
         uses: actions/upload-artifact@v3

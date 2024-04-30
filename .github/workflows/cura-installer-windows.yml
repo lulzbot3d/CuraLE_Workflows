@@ -78,7 +78,7 @@ jobs:
           ref: ${{ github.base_ref }}
 
       - name: Sync pip requirements
-        run: curl.exe -O https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/.github/workflows/requirements-runner.txt
+        run: curl.exe -O https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/.github/workflows/requirements-runner.txt
         working-directory: .github\workflows
 
       - name: Setup Python and pip
@@ -96,8 +96,8 @@ jobs:
 
       - name: Get Conan configuration
         run: |
-          conan config install https://github.com/Ultimaker/conan-config.git
-          conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
+          conan config install https://github.com/lulzbot3d/conan-config-le.git
+          conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
       - name: Add runner credentials to cura remote
         run: conan user -p ${{ secrets.CONAN_PASS }} -r cura ${{ secrets.CONAN_USER }}
@@ -105,7 +105,7 @@ jobs:
       - name: Add Cura private Artifactory remote
         if: ${{ inputs.conan_internal }}
         run: |
-          conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/internal"
+          conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"
           conan user -p ${{ secrets.CONAN_PASS }} -r cura-private ${{ secrets.CONAN_USER }}
 
       - name: Create the Packages (Powershell)
@@ -118,14 +118,14 @@ jobs:
           .\cura_inst\Scripts\activate_github_actions_version_env.ps1
 
       - name: Create the Cura dist
-        run: pyinstaller ./cura_inst/UltiMaker-Cura.spec
+        run: pyinstaller ./cura_inst/LulzBot-CuraLE.spec
 
       - name: Get installer helper scripts
         run: |
           New-Item -ItemType Directory -Force -Path runner_scripts
           cd runner_scripts
-          curl.exe -O https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/runner_scripts/cura_installer_filename.py
-          curl.exe -O https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/runner_scripts/summarize_used_dependencies.py
+          curl.exe -O https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/runner_scripts/cura_installer_filename.py
+          curl.exe -O https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/runner_scripts/summarize_used_dependencies.py
 
       - name: Output the name file name and extension
         id: filename
@@ -136,7 +136,7 @@ jobs:
 
       - name: Create the Windows msi installer (Powershell)
         run: |
-          python ..\cura_inst\packaging\msi\create_windows_msi.py ..\cura_inst .\UltiMaker-Cura "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" "$Env:CURA_APP_NAME"
+          python ..\cura_inst\packaging\msi\create_windows_msi.py ..\cura_inst .\LulzBot-CuraLE "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" "$Env:CURA_APP_NAME"
         working-directory: dist
 
       - name: Sign the Windows msi installer (Powershell)

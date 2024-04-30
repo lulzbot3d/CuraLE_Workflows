@@ -47,7 +47,7 @@ jobs:
               cura_conan_version = "${{ inputs.cura_conan_version }}"
           else:
               now = datetime.datetime.now()
-              cura_conan_version = "cura/latest@ultimaker/stable" if now.hour == int(${{ inputs.latest_release_schedule_hour }}) else "cura/latest@ultimaker/testing"
+              cura_conan_version = "curale/latest@lulzbot/stable" if now.hour == int(${{ inputs.latest_release_schedule_hour }}) else "curale/latest@lulzbot/testing"
           
           release_tag = f"${{ inputs.latest_release_tag }}-${{ inputs.latest_release }}" if "/stable" in cura_conan_version else "${{ inputs.latest_release_tag }}"
           
