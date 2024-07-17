@@ -82,7 +82,7 @@ jobs:
           ref: ${{ github.base_ref }}
 
       - name: Setup Python and pip
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12.x"
 

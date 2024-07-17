@@ -66,7 +66,7 @@ jobs:
         run: wget https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/.github/workflows/requirements-runner.txt -O .github/workflows/requirements-runner.txt
 
       - name: Setup Python and pip
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11.x
           cache: pip
