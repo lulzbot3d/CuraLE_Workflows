@@ -21,7 +21,7 @@ on:
 
     outputs:
       cura_conan_version:
-        description: "The Conan version used to build Cura"
+        description: "The Conan version used to build Cura LE"
         value: ${{ jobs.default_values.outputs.cura_conan_version }}
 
       release_tag:
@@ -42,15 +42,15 @@ jobs:
         run: |
           import os
           import datetime
-          
+
           if "${{ github.event_name }}" != "schedule":
               cura_conan_version = "${{ inputs.cura_conan_version }}"
           else:
               now = datetime.datetime.now()
               cura_conan_version = "curale/latest@lulzbot/stable" if now.hour == int(${{ inputs.latest_release_schedule_hour }}) else "curale/latest@lulzbot/testing"
-          
+
           release_tag = f"${{ inputs.latest_release_tag }}-${{ inputs.latest_release }}" if "/stable" in cura_conan_version else "${{ inputs.latest_release_tag }}"
-          
+
           # Set cura_conan_version environment variable
           output_env = os.environ["GITHUB_OUTPUT"]
           content = ""
