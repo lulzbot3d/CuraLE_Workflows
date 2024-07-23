@@ -78,16 +78,10 @@ jobs:
           conan config install https://github.com/lulzbot3d/conan-config-le.git
           conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
-      - name: Add Cura private Artifactory remote
-        if: ${{ inputs.conan_internal }}
-        run: |
-          conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"
-          conan user -p ${{ secrets.CONAN_PASS }} -r cura-le-private ${{ secrets.CONAN_USER }}
-
-      - name: Add runner credentials to cura remote
+      - name: Add runner credentials to cura-le remote
         run: conan user -p ${{ secrets.CONAN_PASS }} -r cura-le ${{ secrets.CONAN_USER }}
 
-      - name: Add Cura private Artifactory remote
+      - name: Add Cura LE private Artifactory remote
         if: ${{ inputs.conan_internal }}
         run: |
           conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"
@@ -111,11 +105,11 @@ jobs:
       - name: Upload the Package(s)
         if: ${{ always() && !inputs.conan_internal}}
         run: |
-          conan upload ${{ inputs.recipe_id_full }} -r cura --all -c
-          conan upload ${{ inputs.recipe_id_latest }} -r cura -c
+          conan upload ${{ inputs.recipe_id_full }} -r cura-le --all -c
+          conan upload ${{ inputs.recipe_id_latest }} -r cura-le -c
 
       - name: Upload the Package(s) to the private Artifactory
         if: ${{ always() && inputs.conan_internal }}
         run: |
-          conan upload ${{ inputs.recipe_id_full }} -r cura-private --all -c
-          conan upload ${{ inputs.recipe_id_latest }} -r cura-private -c
+          conan upload ${{ inputs.recipe_id_full }} -r cura-le-private --all -c
+          conan upload ${{ inputs.recipe_id_latest }} -r cura-le-private -c
