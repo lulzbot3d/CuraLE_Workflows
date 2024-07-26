@@ -1,5 +1,5 @@
-name: Freeze Cura packages version
-run-name: Freeze Cura packages version to ${{ inputs.version }}
+name: Freeze Cura LE packages version
+run-name: Freeze Cura LE packages version to ${{ inputs.version }}
 
 on:
   workflow_call:
@@ -31,16 +31,16 @@ jobs:
     needs: [parse-version]
     strategy:
       matrix:
-        repository: [Cura, Uranium, CuraEngine, cura-binary-data, fdm_materials]
+        repository: [CuraLE, UraniumLE, CuraEngineLE, CuraLEBinaryData, FDM_MaterialsLE]
         include:
           - main_branch: ${{ inputs.create_feature_branch && 'main' || needs.parse-version.outputs.branch_name }}
-          - repository: fdm_materials
+          - repository: FDM_MaterialsLE
             main_branch: ${{ inputs.create_feature_branch && 'master' || needs.parse-version.outputs.branch_name }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          repository: Ultimaker/${{ matrix.repository }}
+          repository: lulzbot3d/${{ matrix.repository }}
           ref: ${{ matrix.main_branch }}
           token: ${{ secrets.CURA_AUTORELEASE_PAT }}
 
@@ -48,14 +48,14 @@ jobs:
         run: |
           PACKAGE_VERSION=${{ inputs.cura_version }}
           sed -i "s/version:.*/version: \"$PACKAGE_VERSION\"/g" conandata.yml
-          sed -i "s/\"uranium\/.*/\"uranium\/$PACKAGE_VERSION\"/g" conandata.yml
-          sed -i "s/\"cura_resources\/.*/\"cura_resources\/$PACKAGE_VERSION\"/g" conandata.yml
-          sed -i "s/\"curaengine\/.*/\"curaengine\/$PACKAGE_VERSION\"/g" conandata.yml
-          sed -i "s/\"cura_binary_data\/.*/\"cura_binary_data\/$PACKAGE_VERSION\"/g" conandata.yml
-          sed -i "s/\"fdm_materials\/.*/\"fdm_materials\/$PACKAGE_VERSION\"/g" conandata.yml
+          sed -i "s/\"uraniumle\/.*/\"uraniumle\/$PACKAGE_VERSION\"/g" conandata.yml
+          sed -i "s/\"curale_resources\/.*/\"curale_resources\/$PACKAGE_VERSION\"/g" conandata.yml
+          sed -i "s/\"curaenginele\/.*/\"curaenginele\/$PACKAGE_VERSION\"/g" conandata.yml
+          sed -i "s/\"curalebinarydata\/.*/\"curalebinarydata\/$PACKAGE_VERSION\"/g" conandata.yml
+          sed -i "s/\"fdm_materialsle\/.*/\"fdm_materialsle\/$PACKAGE_VERSION\"/g" conandata.yml
 
       - name: Update resources conan package version
-        if: ${{ matrix.repository == 'Cura' }}
+        if: ${{ matrix.repository == 'CuraLE' }}
         working-directory: resources
         run: |
           PACKAGE_VERSION=${{ inputs.cura_version }}

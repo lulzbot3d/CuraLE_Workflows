@@ -16,17 +16,17 @@ on:
         options:
           - CuraLE
           - UraniumLE
-          - fdm_materials_le
-          - Cura-binary-data
+          - FDM_MaterialsLE
+          - CuraLEBinaryData
           - CuraEngineLE
           - CuraEngineLE_grpc_definitions
           - CuraEngineLE_plugin_gradual_flow
-          - synsepalum-dulcificum
+          - SynsepalumDulcificumLE
           - libArcusLE
-          - libnest2dle
+          - libnest2dLE
           - libSavitarLE
-          - pyarcusle
-          - pynest2dle
+          - pyArcusLE
+          - pynest2dLE
           - pySavitarLE
           - NativeCADPlugin
 
@@ -176,7 +176,7 @@ jobs:
           conan config install https://github.com/lulzbot3d/conan-config-le.git
           conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
-      - name: Add Cura private Artifactory remote
+      - name: Add Cura LE private Artifactory remote
         if: ${{ inputs.conan_internal }}
         run: conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"
 
@@ -216,7 +216,7 @@ jobs:
 
       - name: Create conan for UraniumLE and CuraLE
         if: ${{ steps.export-package.conclusion == 'skipped' }}
-        run: conan create . ${{ steps.get-conan-broadcast-data.outputs.recipe_id_full }} ${{ inputs.conan_extra_args }} --build=missing --update -o cura:devtools=True -o *:enable_i18n=True -c user.i18n:options="{'extract':True,'build':True}"
+        run: conan create . ${{ steps.get-conan-broadcast-data.outputs.recipe_id_full }} ${{ inputs.conan_extra_args }} --build=missing --update -o curale:devtools=True -o *:enable_i18n=True -c user.i18n:options="{'extract':True,'build':True}"
 
       - name: Create the latest alias
         if: ${{ inputs.conan_latest }}
@@ -224,16 +224,16 @@ jobs:
 
       - name: Upload the Package(s)
         if: ${{ ! inputs.conan_internal }}
-        run: conan upload ${{ steps.get-conan-broadcast-data.outputs.recipe_id_full }} -r curale --all -c
+        run: conan upload ${{ steps.get-conan-broadcast-data.outputs.recipe_id_full }} -r cura-le --all -c
 
       - name: Upload the latest Package(s)
         if: ${{ ! inputs.conan_internal && inputs.conan_latest }}
-        run: conan upload ${{ steps.get-conan-broadcast-data.outputs.recipe_id_latest }} -r curale -c
+        run: conan upload ${{ steps.get-conan-broadcast-data.outputs.recipe_id_latest }} -r cura-le -c
 
       - name: Upload the Package(s) to the private Artifactory
         if: ${{ inputs.conan_internal }}
-        run: conan upload ${{ steps.get-conan-broadcast-data.outputs.recipe_id_full }} -r curale-private --all -c
+        run: conan upload ${{ steps.get-conan-broadcast-data.outputs.recipe_id_full }} -r cura-le-private --all -c
 
       - name: Upload the latest Package(s) to the private Artifactory
         if: ${{ inputs.conan_internal && inputs.conan_latest }}
-        run: conan upload ${{ steps.get-conan-broadcast-data.outputs.recipe_id_latest }} -r curale-private -c
+        run: conan upload ${{ steps.get-conan-broadcast-data.outputs.recipe_id_latest }} -r cura-le-private -c

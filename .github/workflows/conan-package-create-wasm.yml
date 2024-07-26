@@ -50,7 +50,7 @@ jobs:
           ref: ${{ github.base_ref }}
 
       - name: Sync pip requirements
-        run: wget https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/.github/workflows/requirements-runner.txt -O .github/workflows/requirements-runner.txt
+        run: wget https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/.github/workflows/requirements-runner.txt -O .github/workflows/requirements-runner.txt
 
       - name: Setup Python and pip
         uses: actions/setup-python@v5
@@ -65,7 +65,7 @@ jobs:
       - name: Install Linux system requirements for building
         run: |
           mkdir -p runner_scripts
-          wget https://raw.githubusercontent.com/Ultimaker/cura-workflows/main/runner_scripts/ubuntu_setup.sh -O runner_scripts/ubuntu_setup.sh
+          wget https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/runner_scripts/ubuntu_setup.sh -O runner_scripts/ubuntu_setup.sh
           chmod +x runner_scripts/ubuntu_setup.sh
           sudo ./runner_scripts/ubuntu_setup.sh
 
@@ -78,16 +78,16 @@ jobs:
 
       - name: Get Conan configuration
         run: |
-          conan config install https://github.com/Ultimaker/conan-config.git
-          conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
+          conan config install https://github.com/lulzbot3d/conan-config-le.git
+          conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
-      - name: Add runner credentials to cura remote
+      - name: Add runner credentials to cura-le remote
         run: conan user -p ${{ secrets.CONAN_PASS }} -r cura-le ${{ secrets.CONAN_USER }}
 
-      - name: Add Cura private Artifactory remote
+      - name: Add Cura LE private Artifactory remote
         if: ${{ inputs.conan_internal }}
         run: |
-          conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/internal"
+          conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"
           conan user -p ${{ secrets.CONAN_PASS }} -r cura-le-private ${{ secrets.CONAN_USER }}
 
       - name: Cache Conan downloads
@@ -104,9 +104,9 @@ jobs:
       - name: Upload the Package(s)
         if: ${{ always() && !inputs.conan_internal }}
         run: |
-          conan upload ${{ inputs.recipe_id_full }} -r cura --all -c
+          conan upload ${{ inputs.recipe_id_full }} -r cura-le --all -c
 
       - name: Upload the Package(s) to the private Artifactory
         if: ${{ always() && inputs.conan_internal }}
         run: |
-          conan upload ${{ inputs.recipe_id_full }} -r cura-private --all -c
+          conan upload ${{ inputs.recipe_id_full }} -r cura-le-private --all -c

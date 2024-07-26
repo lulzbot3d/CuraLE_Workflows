@@ -22,23 +22,23 @@ PASSWORD = sys.argv[2]
 def initialize_artifactory():
     return pyartifactory.Artifactory(url=ARTIFACTORY_BASE_URL, auth=(USERNAME, PASSWORD))
 
-ARTIFACT_PATHS = {"cura-le/lulzbot/curaengine"                         : True,
-                  "cura-le/lulzbot/curale"                             : True,
-                  "cura-le/lulzbot/fdm_printer"                        : True,
-                  "cura-le/lulzbot/uranium"                            : True,
-                  "cura-le/_/curaengine"                               : True,
-                  "cura-le/_/cura"                                     : True,
-                  "cura-le/_/fdm_printer"                              : True,
-                  "cura-le/_/uranium"                                  : True,
-                  "cura-conan-cci-remote-cache/lulzbot/curaengine"     : True,
-                  "cura-conan-cci-remote-cache/lulzbot/cura"           : True,
-                  "cura-conan-cci-remote-cache/lulzbot/fdm_printer"    : True,
-                  "cura-conan-cci-remote-cache/lulzbot/uranium"        : True,
-                  "cura-conan-cci-remote-cache/_/curaengine"           : True,
-                  "cura-conan-cci-remote-cache/_/curale"               : True,
-                  "cura-conan-cci-remote-cache/_/fdm_printer"          : True,
-                  "cura-conan-cci-remote-cache/_/uranium"              : True,
-                  "cura_conan-cci-remote-cache"	                       : False}
+ARTIFACT_PATHS = {"cura-le/lulzbot/curaenginele"                        : True,
+                  "cura-le/lulzbot/curale"                              : True,
+                  "cura-le/lulzbot/fdm_printer"                         : True,
+                  "cura-le/lulzbot/uraniumle"                           : True,
+                  "cura-le/_/curaenginele"                              : True,
+                  "cura-le/_/curale"                                    : True,
+                  "cura-le/_/fdm_printer"                               : True,
+                  "cura-le/_/uraniumle"                                 : True,
+                  "cura-le-conan-cci-remote-cache/lulzbot/curaenginele" : True,
+                  "cura-le-conan-cci-remote-cache/lulzbot/curale"       : True,
+                  "cura-le-conan-cci-remote-cache/lulzbot/fdm_printer"  : True,
+                  "cura-le-conan-cci-remote-cache/lulzbot/uraniumle"    : True,
+                  "cura-le-conan-cci-remote-cache/_/curaenginele"       : True,
+                  "cura-le-conan-cci-remote-cache/_/curale"             : True,
+                  "cura-le-conan-cci-remote-cache/_/fdm_printer"        : True,
+                  "cura-le-conan-cci-remote-cache/_/uraniumle"          : True,
+                  "cura_le_conan-cci-remote-cache"	                    : False}
 
 
 def list_artifacts(artifactory_client, artifact_path, depth):

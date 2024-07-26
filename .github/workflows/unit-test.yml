@@ -94,7 +94,7 @@ jobs:
           conan config install https://github.com/lulzbot3d/conan-config-le.git
           conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
-      - name: Add Cura private Artifactory remote
+      - name: Add Cura LE private Artifactory remote
         if: ${{ inputs.conan_internal }}
         run: |
           conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"

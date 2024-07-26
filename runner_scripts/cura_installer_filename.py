@@ -7,7 +7,7 @@ def set_installer_filename(args):
     enterprise = "-Enterprise" if args.enterprise == "true" else ""
     internal = "-Internal" if args.internal == "true" else ""
     
-    installer_filename_args = ["LulzBot-CuraLE", os.getenv('CURA_VERSION_FULL')]
+    installer_filename_args = ["Cura_LulzBot_Edition", os.getenv('CURA_VERSION_FULL')]
     if args.enterprise == "true":
         installer_filename_args.append("Enterprise")
     if args.internal == "true":

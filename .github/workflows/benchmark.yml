@@ -108,10 +108,10 @@ jobs:
           conan config install https://github.com/lulzbot3d/conan-config-le.git
           conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
-      - name: Add runner credentials to cura remote
+      - name: Add runner credentials to cura-le remote
         run: conan user -p ${{ secrets.CONAN_PASS }} -r cura-le ${{ secrets.CONAN_USER }}
 
-      - name: Add Cura private Artifactory remote
+      - name: Add Cura LE private Artifactory remote
         if: ${{ inputs.conan_internal }}
         run: |
           conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"
@@ -158,7 +158,7 @@ jobs:
         with:
           name: ${{ inputs.name }}
           output-file-path: ${{ inputs.output_file_path }}
-          gh-repository: github.com/lulzbot3d/CuraEngineBenchmarks
+          gh-repository: github.com/lulzbot3d/CuraEngineLEBenchmarks
           gh-pages-branch: main
           benchmark-data-dir-path: ${{ inputs.data_dir }}
           tool: ${{ inputs.tool }}
