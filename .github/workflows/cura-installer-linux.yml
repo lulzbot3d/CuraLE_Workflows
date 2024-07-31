@@ -115,7 +115,7 @@ jobs:
           conan user -p ${{ secrets.CONAN_PASS }} -r cura-le-private ${{ secrets.CONAN_USER }}
 
       - name: Cache Conan downloads
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /home/runner/.conan/downloads
           key: ${{ runner.os }}-conan-downloads-${{ github.run_id }}
