@@ -181,7 +181,7 @@ jobs:
         run: conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/internal"
 
       - name: Cache Conan downloads
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /home/runner/.conan/downloads
           key: ${{ runner.os }}-conan-downloads-${{ github.run_id }}
