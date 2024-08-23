@@ -14,17 +14,16 @@ jobs:
     steps:
       - name: Sync pip requirements
         run: curl -O https://raw.githubusercontent.com/lulzbot3d/cura-le-workflows/main/.github/workflows/requirements-runner.txt
-        working-directory: .github\workflows
 
       - name: Setup Python and pip
         uses: actions/setup-python@v5
         with:
           python-version: 3.11.x
           cache: pip
-          cache-dependency-path: .\.github\workflows\requirements-runner.txt
+          cache-dependency-path: .\requirements-runner.txt
 
       - name: Install Python requirements and Create default Conan profile
-        run: pip install -r .\.github\workflows\requirements-runner.txt
+        run: pip install -r .\requirements-runner.txt
 
       - name: Create default Conan profile
         run: conan profile new default --detect
