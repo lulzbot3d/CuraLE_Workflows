@@ -59,16 +59,16 @@ jobs:
 
       - name: Install the Package(s)
         run:
-          IFS=',' read -ra r_array <<< "${{inputs.recipes}}"
-          for recipe in "${r_array[@]}"
+          IFS=',' read -ra r_array <<< "${{inputs.recipes}}";
+          for recipe in "${r_array[@]}";
           do
-            conan install -r conancenter "$recipe" --build=missing --update
+            conan install -r conancenter "$recipe" --build=missing --update;
           done
 
       - name: Upload the Package(s)
         run:
-          IFS=',' read -ra r_array <<< "${{inputs.recipes}}"
-          for recipe in "${r_array[@]}"
+          IFS=',' read -ra r_array <<< "${{inputs.recipes}}";
+          for recipe in "${r_array[@]}";
           do
-            conan upload "$recipe" -r cura-le --all -c
+            conan upload "$recipe" -r cura-le --all -c;
           done
