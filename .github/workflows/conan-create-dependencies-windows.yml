@@ -51,7 +51,7 @@ jobs:
         run:
           foreach($recipe in "${{inputs.recipes}}".split(","))
           {
-            conan install -r conancenter $recipe --build=missing --update
+            conan install $recipe --build=missing --update
           }
 
       - name: Upload the Package(s)
