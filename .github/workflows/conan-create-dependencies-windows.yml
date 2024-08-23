@@ -42,21 +42,21 @@ jobs:
           conan config install https://github.com/lulzbot3d/conan-config-le.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
       - name: Add runner credentials to cura-le remote
-        run: conan user -p ${{ env.CONAN_PASSWORD }} -r cura-le ${{ env.CONAN_LOGIN_USERNAME }}
+        run: conan user -p ${{ secrets.CONAN_PASS }} -r cura-le ${{ secrets.CONAN_USER }}
 
       - name: Add conancenter remote
         run: conan remote add conancenter https://center.conan.io
 
       - name: Export the Package (binaries)
         run:
-          foreach($recipe in "${{inputs.recipe}}".split(","))
+          foreach($recipe in "${{inputs.recipes}}".split(","))
           {
             conan install -r conancenter $recipe --build=missing --update
           }
 
       - name: Upload the Package(s)
         run:
-          foreach($recipe in "${{inputs.recipe}}".split(","))
+          foreach($recipe in "${{inputs.recipes}}".split(","))
           {
             conan upload $recipe -r cura-le --all -c
           }

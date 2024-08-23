@@ -22,16 +22,20 @@ jobs:
     uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-linux.yml@main
     with:
       recipes: ${{inputs.dependencies}}
+    secrets: inherit
+
   create_dependencies_macos:
     name: Create MacOS Dependencies
     if: inputs.env_type == 'MacOS' && github.actor == 'sfjelstad'
     uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-macos.yml@main
     with:
       recipes: ${{inputs.dependencies}}
+    secrets: inherit
+
   create_dependencies_windows:
     name: Create Windows Dependencies
     if: inputs.env_type == 'Windows' && github.actor == 'sfjelstad'
     uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-windows.yml@main
     with:
       recipes: ${{inputs.dependencies}}
-
+    secrets: inherit
