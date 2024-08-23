@@ -7,6 +7,14 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+
+env:
+  CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_USER }}
+  CONAN_PASSWORD: ${{ secrets.CONAN_PASS }}
+  SENTRY_TOKEN: ${{ secrets.CURAENGINELE_SENTRY_TOKEN }}
+
 jobs:
   package-create:
     runs-on: macos-12
