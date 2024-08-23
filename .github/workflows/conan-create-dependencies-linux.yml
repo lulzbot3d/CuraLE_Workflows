@@ -18,6 +18,9 @@ env:
 jobs:
   package-create:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Sync pip requirements
@@ -54,7 +57,7 @@ jobs:
       - name: Add conancenter remote
         run: conan remote add conancenter https://center.conan.io
 
-      - name: Export the Package (binaries)
+      - name: Install the Package(s)
         run:
           IFS=',' read -ra r_array <<< "${{inputs.recipes}}"
           for recipe in "${r_array[@]}"; do

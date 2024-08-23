@@ -6,9 +6,10 @@ on:
       env_type:
         description: 'Build Environment'
         required: true
-        default: 'Linux'
+        default: 'All'
         type: choice
         options:
+          - All
           - Linux
           - MacOS
           - Windows
@@ -18,7 +19,7 @@ on:
 jobs:
   create_dependencies_linux:
     name: Create Linux Dependencies
-    if: inputs.env_type == 'Linux' && github.actor == 'sfjelstad'
+    if: (inputs.env_type == 'All' || inputs.env_type == 'Linux') && github.actor == 'sfjelstad'
     uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-linux.yml@main
     with:
       recipes: ${{inputs.dependencies}}
@@ -26,7 +27,7 @@ jobs:
 
   create_dependencies_macos:
     name: Create MacOS Dependencies
-    if: inputs.env_type == 'MacOS' && github.actor == 'sfjelstad'
+    if: (inputs.env_type == 'All' || inputs.env_type == 'MacOS') && github.actor == 'sfjelstad'
     uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-macos.yml@main
     with:
       recipes: ${{inputs.dependencies}}
@@ -34,7 +35,7 @@ jobs:
 
   create_dependencies_windows:
     name: Create Windows Dependencies
-    if: inputs.env_type == 'Windows' && github.actor == 'sfjelstad'
+    if: (inputs.env_type == 'All' || inputs.env_type == 'Windows') && github.actor == 'sfjelstad'
     uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-windows.yml@main
     with:
       recipes: ${{inputs.dependencies}}

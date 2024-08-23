@@ -47,7 +47,7 @@ jobs:
       - name: Add conancenter remote
         run: conan remote add conancenter https://center.conan.io
 
-      - name: Export the Package (binaries)
+      - name: Install the Package(s)
         run:
           foreach($recipe in "${{inputs.recipes}}".split(","))
           {
