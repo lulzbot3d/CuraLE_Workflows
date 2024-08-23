@@ -62,7 +62,7 @@ jobs:
           IFS=',' read -ra r_array <<< "${{inputs.recipes}}";
           for recipe in "${r_array[@]}";
           do
-            conan install -r conancenter "$recipe" --build=missing --update;
+            conan install "$recipe" --build=missing --update;
           done
 
       - name: Upload the Package(s)
