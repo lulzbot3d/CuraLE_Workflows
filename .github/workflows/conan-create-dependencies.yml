@@ -1,0 +1,37 @@
+name: Create Conan Dependencies
+
+on:
+  workflow_dispatch:
+    inputs:
+      env_type:
+        description: 'Build Environment'
+        required: true
+        default: 'Linux'
+        type: choice
+        options:
+          - Linux
+          - MacOS
+          - Windows
+      dependencies:
+        description: 'Dependencies to create (Formatted example/1.0, comma seperated)'
+
+jobs:
+  create_dependencies_linux:
+    name: Create Linux Dependencies
+    if: inputs.env_type == 'Linux' && github.actor == 'sfjelstad'
+    uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-linux.yml@main
+    with:
+      recipes: ${{inputs.dependencies}}
+  create_dependencies_macos:
+    name: Create MacOS Dependencies
+    if: inputs.env_type == 'MacOS' && github.actor == 'sfjelstad'
+    uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-macos.yml@main
+    with:
+      recipes: ${{inputs.dependencies}}
+  create_dependencies_windows:
+    name: Create Windows Dependencies
+    if: inputs.env_type == 'Windows' && github.actor == 'sfjelstad'
+    uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-create-dependencies-windows.yml@main
+    with:
+      recipes: ${{inputs.dependencies}}
+
