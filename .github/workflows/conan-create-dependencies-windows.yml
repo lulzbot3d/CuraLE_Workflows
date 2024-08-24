@@ -51,6 +51,6 @@ jobs:
         run:
           foreach($recipe in "${{inputs.recipes}}".split(","))
           {
-            conan install -r conancenter $recipe --build=missing --update
-            conan upload $recipe -r cura-le --all -c
+            conan install -r conancenter $recipe --build=missing --update;
+            conan upload $recipe -r cura-le --all -c;
           }
