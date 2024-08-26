@@ -47,16 +47,10 @@ jobs:
       - name: Add conancenter remote
         run: conan remote add conancenter https://center.conan.io
 
-      - name: Install the Package(s)
+      - name: Install and Upload Package(s)
         run:
           foreach($recipe in "${{inputs.recipes}}".split(","))
           {
-            conan install -r conancenter $recipe --build=missing --update
-          }
-
-      - name: Upload the Package(s)
-        run:
-          foreach($recipe in "${{inputs.recipes}}".split(","))
-          {
-            conan upload $recipe -r cura-le --all -c
+            conan install -r conancenter $recipe --build=missing --update;
+            conan upload $recipe -r cura-le --all -c;
           }

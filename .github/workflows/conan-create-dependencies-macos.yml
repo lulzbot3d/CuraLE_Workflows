@@ -57,18 +57,11 @@ jobs:
       - name: Add conancenter remote
         run: conan remote add conancenter https://center.conan.io
 
-      - name: Install the Package(s)
+      - name: Install and Upload the Package(s)
         run:
           IFS=',' read -ra r_array <<< "${{inputs.recipes}}";
           for recipe in "${r_array[@]}";
           do
             conan install -r conancenter "$recipe" --build=missing --update;
-          done
-
-      - name: Upload the Package(s)
-        run:
-          IFS=',' read -ra r_array <<< "${{inputs.recipes}}";
-          for recipe in "${r_array[@]}";
-          do
             conan upload "$recipe" -r cura-le --all -c;
           done
