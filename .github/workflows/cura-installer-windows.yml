@@ -156,7 +156,7 @@ jobs:
 
       - name: Upload the installer msi
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: ${{steps.filename.outputs.INSTALLER_FILENAME }}-msi
           path: |
@@ -165,7 +165,7 @@ jobs:
 
       - name: Upload the installer exe
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: ${{steps.filename.outputs.INSTALLER_FILENAME }}-exe
           path: |
@@ -174,7 +174,7 @@ jobs:
 
       - name: Upload the application exe
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: Cura_LulzBot_Edition.exe
           path: dist/Cura_LulzBot_Edition/Cura_LulzBot_Edition.exe
@@ -182,7 +182,7 @@ jobs:
 
       - name: Upload the engine exe
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: CuraEngineLE.exe
           path: dist/Cura_LulzBot_Edition/CuraEngineLE.exe
@@ -200,7 +200,7 @@ jobs:
       # NOTE: The extension is .sh, since this isn't going to build-environment, so not on the Win build image.
       - name: Upload the run info
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: windows-run-info
           path: |

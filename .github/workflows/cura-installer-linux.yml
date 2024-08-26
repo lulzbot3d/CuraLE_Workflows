@@ -165,7 +165,7 @@ jobs:
         run: conan upload "*" -r cura-le --all -c
 
       - name: Upload the AppImage
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: ${{ steps.filename.outputs.INSTALLER_FILENAME }}-AppImage
           path: |
@@ -173,7 +173,7 @@ jobs:
           retention-days: 5
 
       - name: Upload the asc
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: ${{ steps.filename.outputs.INSTALLER_FILENAME }}-asc
           path: |
@@ -188,7 +188,7 @@ jobs:
               f.writelines(f'echo "CURA_VERSION_FULL={os.environ["CURA_VERSION_FULL"]}" >> $GITHUB_ENV\n')
 
       - name: Upload the run info
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: linux-run-info
           path: |
