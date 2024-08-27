@@ -6,7 +6,7 @@ on:
       organization:
         description: 'Organization'
         required: false
-        default: LulzBot
+        default: lulzbot3d
         type: string
 
       repository:
@@ -81,7 +81,7 @@ on:
     inputs:
       organization:
         required: false
-        default: LulzBot
+        default: lulzbot3d
         type: string
 
       repository:
@@ -137,7 +137,7 @@ env:
 
 jobs:
   package-export:
-    runs-on: self-hosted-Ubuntu22-X64
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
