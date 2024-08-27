@@ -93,7 +93,7 @@ jobs:
       - name: Cache Conan downloads
         uses: actions/cache@v4
         with:
-          path: /home/runner/.conan/downloads
+          path: /Users/runner/.conan/downloads
           key: ${{ runner.os }}-conan-downloads-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-conan-downloads-
