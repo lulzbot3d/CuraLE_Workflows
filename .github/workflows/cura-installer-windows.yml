@@ -111,7 +111,7 @@ jobs:
           .\curale_inst\Scripts\activate_github_actions_version_env.ps1
 
       - name: Create the Cura LE dist
-        run: pyinstaller ./curale_inst/LulzBot-CuraLE.spec
+        run: pyinstaller ./curale_inst/CuraLE.spec
 
       - name: Output the name file name and extension
         id: filename
