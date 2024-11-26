@@ -111,7 +111,7 @@ jobs:
           .\curale_inst\Scripts\activate_github_actions_version_env.ps1
 
       - name: Create the Cura LE dist
-        run: pyinstaller ./curale_inst/LulzBot-CuraLE.spec
+        run: pyinstaller ./curale_inst/CuraLE.spec
 
       - name: Sign the internal executables
         working-directory: dist/UltiMaker-Cura
@@ -132,17 +132,21 @@ jobs:
           python ..\curale_inst\packaging\msi\create_windows_msi.py ..\curale_inst .\Cura_LulzBot_Edition "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" "$Env:CURA_APP_NAME"
         working-directory: dist
 
+      - name: Create the Windows exe installer (Powershell)
+        if: ${{ always() }}
+        run: |
+          python ..\curale_inst\packaging\NSIS\create_windows_installer.py ..\curale_inst . "${{steps.filename.outputs.INSTALLER_FILENAME }}.exe"
+        working-directory: dist
+
+      - name: Find Signtool
+        uses: KamaranL/add-signtool-action@v1
+        id: signtool
+
       - name: Sign the Windows msi installer (Powershell)
         run: |
           & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f C:\actions-runner\code_sign.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN_CONTAINER }} "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi"
         working-directory: dist
         timeout-minutes: 2
-
-      - name: Create the Windows exe installer (Powershell)
-        if: ${{ always() }}
-        run: |
-          python ..\curale_inst\packaging\NSIS\create_windows_installer.py ../curale_inst . "${{steps.filename.outputs.INSTALLER_FILENAME }}.exe"
-        working-directory: dist
 
       - name: Sign the Windows exe installer (Powershell)
         if: ${{ always() }}
