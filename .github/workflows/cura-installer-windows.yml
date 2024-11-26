@@ -63,7 +63,7 @@ jobs:
     runs-on: ${{ inputs.operating_system }}
 
     steps:
-      - name: Checkout Cura repo
+      - name: Checkout CuraLE repo
         uses: actions/checkout@v4
         with:
           repository: lulzbot3d/CuraLE
@@ -113,11 +113,15 @@ jobs:
       - name: Create the Cura LE dist
         run: pyinstaller ./curale_inst/CuraLE.spec
 
+      - name: Find Signtool
+        uses: KamaranL/add-signtool-action@v1
+        id: signtool
+
       - name: Sign the internal executables
-        working-directory: dist/UltiMaker-Cura
+        working-directory: dist/Cura_LulzBot_Edition
         run: |
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f C:\actions-runner\code_sign.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN_CONTAINER }} "CuraEngine.exe"
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f C:\actions-runner\code_sign.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN_CONTAINER }} "UltiMaker-Cura.exe"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f ${{ secrets.WIN_CERT_INSTALLER_CER }} /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_CERT_INSTALLER_CER_PASS }} "CuraEngineLE.exe"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f ${{ secrets.WIN_CERT_INSTALLER_CER }} /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_CERT_INSTALLER_CER_PASS }} "Cura_LulzBot_Edition.exe"
         timeout-minutes: 2
 
       - name: Output the name file name and extension
@@ -138,20 +142,16 @@ jobs:
           python ..\curale_inst\packaging\NSIS\create_windows_installer.py ..\curale_inst . "${{steps.filename.outputs.INSTALLER_FILENAME }}.exe"
         working-directory: dist
 
-      - name: Find Signtool
-        uses: KamaranL/add-signtool-action@v1
-        id: signtool
-
       - name: Sign the Windows msi installer (Powershell)
         run: |
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f C:\actions-runner\code_sign.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN_CONTAINER }} "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f ${{ secrets.WIN_CERT_INSTALLER_CER }} /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_CERT_INSTALLER_CER_PASS }} "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi"
         working-directory: dist
         timeout-minutes: 2
 
       - name: Sign the Windows exe installer (Powershell)
         if: ${{ always() }}
         run: |
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f C:\actions-runner\code_sign.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN_CONTAINER }} "${{steps.filename.outputs.INSTALLER_FILENAME }}.exe"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f ${{ secrets.WIN_CERT_INSTALLER_CER }} /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_CERT_INSTALLER_CER_PASS }} "${{steps.filename.outputs.INSTALLER_FILENAME }}.exe"
         working-directory: dist
         timeout-minutes: 2
 
