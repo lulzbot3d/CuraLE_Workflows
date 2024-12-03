@@ -114,8 +114,8 @@ jobs:
       - name: Sign the internal executables
         working-directory: dist/Cura_LulzBot_Edition
         run: |
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN }} "CuraEngineLE.exe"
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN }} "Cura_LulzBot_Edition.exe"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc "${{ secrets.WIN_TOKEN }}" "CuraEngineLE.exe"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc "${{ secrets.WIN_TOKEN }}" "Cura_LulzBot_Edition.exe"
         timeout-minutes: 2
 
       - name: Output the name file name and extension
@@ -138,14 +138,14 @@ jobs:
 
       - name: Sign the Windows msi installer (Powershell)
         run: |
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN }} "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc "${{ secrets.WIN_TOKEN }}" "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi"
         working-directory: dist
         timeout-minutes: 2
 
       - name: Sign the Windows exe installer (Powershell)
         if: ${{ always() }}
         run: |
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN }} "${{steps.filename.outputs.INSTALLER_FILENAME }}.exe"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc "${{ secrets.WIN_TOKEN }}" "${{steps.filename.outputs.INSTALLER_FILENAME }}.exe"
         working-directory: dist
         timeout-minutes: 2
 
