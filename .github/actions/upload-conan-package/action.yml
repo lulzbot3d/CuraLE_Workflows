@@ -1,6 +1,6 @@
 # composite action, not to be run on its own, but included in a build script
 
-name: 'Upload conan packages'
+name: 'Upload Conan Packages'
 description: 'Uploads one or multiple conan packages, to either the public or private repository'
 
 inputs:
@@ -35,7 +35,7 @@ runs:
           fi
 
           if [ "${{ inputs.private_data }}" == "true" ]; then
-            "$conandir"conan upload "${{ inputs.package_name }}" -r cura-private-conan2 -c
+            "$conandir"conan upload "${{ inputs.package_name }}" -r cura-le-private-conan2 -c
           else
-            "$conandir"conan upload "${{ inputs.package_name }}" -r cura-conan2 -c
+            "$conandir"conan upload "${{ inputs.package_name }}" -r cura-le-conan2 -c
           fi

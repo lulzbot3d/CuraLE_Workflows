@@ -25,7 +25,7 @@ def get_conan_broadcast_data(args):
 
     version_full = f"{version_base}+{version_sha}"
 
-    user = "ultimaker"
+    user = "lulzbot"
 
     is_release = args.release == "true"
     ref_name = args.head_ref if args.event_name == "pull_request" else args.ref_name

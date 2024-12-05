@@ -1,4 +1,4 @@
-name: Update translations
+name: Update Translations
 
 on:
   workflow_call:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup the build environment
-        uses: ultimaker/cura-workflows/.github/actions/setup-build-environment@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
         with:
           install_system_dependencies: true
           branch: ${{ inputs.branch }}

@@ -1,4 +1,4 @@
-name: Create Conan package release
+name: Create Conan Package Release
 
 on:
   workflow_call:
@@ -72,7 +72,7 @@ jobs:
     name: Calculate version numbers
     uses: ./.github/workflows/conan-recipe-version.yml
     with:
-      repository: Ultimaker/${{ inputs.repository }}
+      repository: lulzbot3d/${{ inputs.repository }}
       branch: ${{ inputs.branch }}
       conan_recipe_root: ${{ inputs.conan_recipe_root }}
       release: true
@@ -82,7 +82,7 @@ jobs:
     needs: [ conan-recipe-version ]
     uses: ./.github/workflows/conan-recipe-export.yml
     with:
-      repository: Ultimaker/${{ inputs.repository }}
+      repository: lulzbot3d/${{ inputs.repository }}
       branch: ${{ inputs.branch }}
       version: ${{ needs.conan-recipe-version.outputs.version_base }}
       user: ${{ needs.conan-recipe-version.outputs.user }}

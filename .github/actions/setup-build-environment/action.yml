@@ -1,6 +1,6 @@
 # composite action, not to be run on its own, but included at the beginning of a build script
 
-name: 'Setup the build environment'
+name: 'Setup the Build Environment'
 description: 'Clones the required repositories, and properly sets Python and conan up'
 
 inputs:
@@ -60,11 +60,11 @@ runs:
         ref: ${{ inputs.branch }}
         path: ${{ inputs.repository_path }}
 
-    - name: Checkout Cura-workflows repo
+    - name: Checkout CuraLE_Workflows repo
       uses: actions/checkout@v4
       with:
-        repository: Ultimaker/Cura-workflows
-        path: Cura-workflows
+        repository: lulzbot3d/CuraLE_Workflows
+        path: CuraLE_Workflows
 
     - name: Setup Python and pip
       uses: actions/setup-python@v5
@@ -90,28 +90,28 @@ runs:
         fi
         echo $pydir >> pydir.txt
 
-        "$pydirex"python -m pip install -r Cura-workflows/.github/workflows/requirements-runner.txt
+        "$pydirex"python -m pip install -r CuraLE_Workflows/.github/workflows/requirements-runner.txt
 
         "$conandir"conan profile detect -f
-        "$conandir"conan config install https://github.com/Ultimaker/conan-config.git
+        "$conandir"conan config install https://github.com/lulzbot3d/conan-config-le.git
 
         if [ "${{ inputs.conan_user }}" != "" ] && [ "${{ inputs.conan_password }}" != "" ]; then
-          "$conandir"conan remote login cura-conan2 ${{ inputs.conan_user }} -p ${{ inputs.conan_password }}
+          "$conandir"conan remote login cura-le-conan2 ${{ inputs.conan_user }} -p ${{ inputs.conan_password }}
         fi
 
         if [ "${{ inputs.private_data }}" == "true" ]; then
-          "$conandir"conan remote enable cura-private-conan2
+          "$conandir"conan remote enable cura-le-private-conan2
           if [ "${{ inputs.conan_user }}" != "" ] && [ "${{ inputs.conan_password }}" != "" ]; then
-            "$conandir"conan remote login cura-private-conan2 ${{ inputs.conan_user }} -p ${{ inputs.conan_password }}
+            "$conandir"conan remote login cura-le-private-conan2 ${{ inputs.conan_user }} -p ${{ inputs.conan_password }}
           fi
         fi
 
         if [ "${{ inputs.install_system_dependencies }}" == "true" ]; then
           if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-            chmod +x Cura-workflows/runner_scripts/ubuntu_setup.sh
-            sudo ./Cura-workflows/runner_scripts/ubuntu_setup.sh
+            chmod +x CuraLE_Workflows/runner_scripts/ubuntu_setup.sh
+            sudo ./CuraLE_Workflows/runner_scripts/ubuntu_setup.sh
           elif [[ "$OSTYPE" == "darwin"* ]]; then
-            chmod +x Cura-workflows/runner_scripts/macos_setup.sh
-            ./Cura-workflows/runner_scripts/macos_setup.sh
+            chmod +x CuraLE_Workflows/runner_scripts/macos_setup.sh
+            ./CuraLE_Workflows/runner_scripts/macos_setup.sh
           fi
         fi

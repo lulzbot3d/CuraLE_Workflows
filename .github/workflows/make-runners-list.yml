@@ -1,4 +1,4 @@
-name: Builds the proper runners list
+name: Builds the Proper Runners List
 
 on:
   workflow_call:
@@ -35,14 +35,14 @@ jobs:
       matrix: ${{ steps.call-make-runner-script.outputs.matrix }}
 
     steps:
-    - name: Checkout Cura-workflows repo
+    - name: Checkout CuraLE_Workflows repo
       uses: actions/checkout@v4
       with:
-        repository: Ultimaker/Cura-workflows
-        path: Cura-workflows
+        repository: lulzbot3d/CuraLE_Workflows
+        path: CuraLE_Workflows
 
     - name: Make the runners list from script
       id: call-make-runner-script
       run: |
-        RUNNERS_LIST=$(python ./Cura-workflows/runner_scripts/make_runners_list.py ${{ inputs.platform_linux && '--platform-linux' || '' }} ${{ inputs.platform_windows && '--platform-windows' || '' }} ${{ inputs.platform_mac && '--platform-mac' || '' }} ${{ inputs.platform_wasm && '--platform-wasm' || '' }})
+        RUNNERS_LIST=$(python ./CuraLE_Workflows/runner_scripts/make_runners_list.py ${{ inputs.platform_linux && '--platform-linux' || '' }} ${{ inputs.platform_windows && '--platform-windows' || '' }} ${{ inputs.platform_mac && '--platform-mac' || '' }} ${{ inputs.platform_wasm && '--platform-wasm' || '' }})
         echo "matrix=$RUNNERS_LIST" >> $GITHUB_OUTPUT

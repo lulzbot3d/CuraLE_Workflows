@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - name: Setup the build environment
-        uses: ultimaker/cura-workflows/.github/actions/setup-build-environment@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
         with:
           conan_user: ${{ secrets.CONAN_USER }}
           conan_password: ${{ secrets.CONAN_PASS }}
@@ -59,16 +59,16 @@ jobs:
 
       - name: Install AppImage builder
         run: |
-          chmod +x ./cura-le-workflows/runner_scripts/appimage_setup.sh
-          ./cura-le-workflows/runner_scripts/appimage_setup.sh
+          chmod +x ./CuraLE_Workflows/runner_scripts/appimage_setup.sh
+          ./CuraLE_Workflows/runner_scripts/appimage_setup.sh
 
       - name: Configure GPG Key
         run: echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
 
       - name: Gather/build the packages
-        run: conan install --requires "${{ inputs.cura_conan_version }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile installer.jinja -c user.sentry:token="${{ secrets.CURAENGINE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "cura/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "cura/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "cura/*:internal=True"' || '' }}
+        run: conan install --requires "${{ inputs.cura_conan_version }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile installer.jinja -c user.sentry:token="${{ secrets.CURAENGINE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "curale/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "curale/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "curale/*:internal=True"' || '' }}
 
-      - name: Create the Cura distribution with pyinstaller
+      - name: Create the Cura LE distribution with pyinstaller
         id: prepare-distribution
         run: |
           source cura_inst/conanrun.sh
@@ -76,13 +76,13 @@ jobs:
           source cura_installer_venv/bin/activate
           ls cura_inst/packaging/pip_requirements_{core,installer}_*.txt | xargs -I {} pip install -r {}
 
-          python Cura-workflows/runner_scripts/prepare_installer.py --os ${{ runner.os }} --architecture X64 ${{ inputs.enterprise && '--enterprise' || '' }} ${{ inputs.private_data && '--internal' || '' }} --summary-output "$GITHUB_STEP_SUMMARY" --variables-output "$GITHUB_OUTPUT"
+          python CuraLE_Workflows/runner_scripts/prepare_installer.py --os ${{ runner.os }} --architecture X64 ${{ inputs.enterprise && '--enterprise' || '' }} ${{ inputs.private_data && '--internal' || '' }} --summary-output "$GITHUB_STEP_SUMMARY" --variables-output "$GITHUB_OUTPUT"
 
-          pyinstaller ./cura_inst/UltiMaker-Cura.spec
+          pyinstaller ./cura_inst/CuraLE.spec
 
       - name: Create the Linux AppImage (Bash)
         run: |
-          python ../cura_inst/packaging/AppImage-builder/create_appimage.py ./UltiMaker-Cura "${{ steps.prepare-distribution.outputs.CURA_VERSION_FULL }}" "${{ steps.prepare-distribution.outputs.INSTALLER_FILENAME }}.AppImage"
+          python ../cura_inst/packaging/AppImage-builder/create_appimage.py ./Cura_LulzBot_Edition "${{ steps.prepare-distribution.outputs.CURA_VERSION_FULL }}" "${{ steps.prepare-distribution.outputs.INSTALLER_FILENAME }}.AppImage"
           chmod +x "${{ steps.prepare-distribution.outputs.INSTALLER_FILENAME }}.AppImage"
         working-directory: dist
 
@@ -102,7 +102,7 @@ jobs:
 
       - name: Upload the built Package(s)
         if: ${{ always() && ! inputs.private_data }}
-        uses: ultimaker/cura-workflows/.github/actions/upload-conan-package@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/upload-conan-package@main
         with:
           package_name: '*'
 

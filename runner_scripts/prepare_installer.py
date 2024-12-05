@@ -10,7 +10,7 @@ def set_installer_filename(args):
     enterprise = "-Enterprise" if args.enterprise == "true" else ""
     internal = "-Internal" if args.internal == "true" else ""
     
-    installer_filename_args = ["UltiMaker-Cura", CuraVersion.CuraVersionFull]
+    installer_filename_args = ["Cura_LulzBot_Edition", CuraVersion.CuraVersionFull]
     if args.enterprise:
         installer_filename_args.append("Enterprise")
     if args.internal:

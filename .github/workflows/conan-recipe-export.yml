@@ -1,4 +1,4 @@
-name: Export Conan Recipe to server
+name: Export Conan Recipe to Server
 
 on:
   workflow_call:
@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Setup the build environment
-        uses: ultimaker/cura-workflows/.github/actions/setup-build-environment@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
         with:
           repository: ${{ inputs.repository }}
           branch: ${{ inputs.branch }}
@@ -66,7 +66,7 @@ jobs:
           echo "package_reference=$PACKAGE_REFERENCE" >> $GITHUB_OUTPUT
 
       - name: Upload the Recipe
-        uses: ultimaker/cura-workflows/.github/actions/upload-conan-package@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/upload-conan-package@main
         with:
           package_name: ${{ steps.export-local-cache.outputs.package_reference }}
           private_data: ${{ inputs.private_data }}

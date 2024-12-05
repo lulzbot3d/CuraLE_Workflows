@@ -1,4 +1,4 @@
-name: Apply cpp linter
+name: Apply cpp Linter
 
 on:
   workflow_call:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup the environment
-        uses: ultimaker/cura-workflows/.github/actions/setup-build-environment@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
 
       - uses: greguintow/get-diff-action@v7
         with:

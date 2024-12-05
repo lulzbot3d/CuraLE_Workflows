@@ -1,5 +1,5 @@
-name: Macos Installer
-run-name: ${{ inputs.cura_conan_version }} for Macos-${{ inputs.architecture }} by @${{ github.actor }}
+name: macOS Installer
+run-name: ${{ inputs.cura_conan_version }} for MacOS-${{ inputs.architecture }} by @${{ github.actor }}
 
 on:
   workflow_call:
@@ -59,12 +59,12 @@ env:
 
 jobs:
   cura-installer-create:
-    name: Build MacOS packages ${{ inputs.architecture }}
+    name: Build macOS packages ${{ inputs.architecture }}
     runs-on: ${{ inputs.operating_system }}
 
     steps:
       - name: Setup the build environment
-        uses: ultimaker/cura-workflows/.github/actions/setup-build-environment@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
         with:
           conan_user: ${{ secrets.CONAN_USER }}
           conan_password: ${{ secrets.CONAN_PASS }}
@@ -72,10 +72,10 @@ jobs:
           install_system_dependencies: true
           repository_path: _cura_sources # we don't want the actual sources to interfere with the built conan package
 
-      - name: Remove Macos keychain (Bash)
+      - name: Remove macOS keychain (Bash)
         run: security delete-keychain signing_temp.keychain || true
 
-      - name: Configure Macos keychain Developer Cert(Bash)
+      - name: Configure macOS keychain Developer Cert(Bash)
         id: macos-keychain-developer-cert
         uses: apple-actions/import-codesign-certs@v3
         with:
@@ -83,7 +83,7 @@ jobs:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12 }}
           p12-password: ${{ secrets.MACOS_CERT_PASSPHRASE }}
 
-      - name: Configure Macos keychain Installer Cert (Bash)
+      - name: Configure macOS keychain Installer Cert (Bash)
         id: macos-keychain-installer-cert
         uses: apple-actions/import-codesign-certs@v3
         with:
@@ -92,13 +92,13 @@ jobs:
           p12-file-base64: ${{ secrets.MACOS_CERT_INSTALLER_P12 }}
           p12-password: ${{ secrets.MACOS_CERT_PASSPHRASE }}
 
-      - name: Unlock Macos keychain (Bash)
+      - name: Unlock macOS keychain (Bash)
         run: security unlock -p "${{  steps.macos-keychain-developer-cert.outputs.keychain-password }}" signing_temp.keychain
 
       - name: Gather/build the packages
-        run: conan install --requires "${{ inputs.cura_conan_version }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile installer.jinja -c user.sentry:token="${{ secrets.CURAENGINE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "cura/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "cura/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "cura/*:internal=True"' || '' }}
+        run: conan install --requires "${{ inputs.cura_conan_version }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile installer.jinja -c user.sentry:token="${{ secrets.CURAENGINE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "curale/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "curale/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "curale/*:internal=True"' || '' }}
 
-      - name: Create the Cura distribution with pyinstaller
+      - name: Create the Cura LE distribution with pyinstaller
         id: prepare-distribution
         run: |
           source cura_inst/conanrun.sh
@@ -106,11 +106,11 @@ jobs:
           source cura_installer_venv/bin/activate
           ls cura_inst/packaging/pip_requirements_{core,installer}_*.txt | xargs -I {} pip install -r {}
 
-          python Cura-workflows/runner_scripts/prepare_installer.py --os ${{ runner.os }} --architecture ${{ inputs.architecture }} ${{ inputs.enterprise && '--enterprise' || '' }} ${{ inputs.private_data && '--internal' || '' }} --summary-output "$GITHUB_STEP_SUMMARY" --variables-output "$GITHUB_OUTPUT"
+          python CuraLE_Workflows/runner_scripts/prepare_installer.py --os ${{ runner.os }} --architecture ${{ inputs.architecture }} ${{ inputs.enterprise && '--enterprise' || '' }} ${{ inputs.private_data && '--internal' || '' }} --summary-output "$GITHUB_STEP_SUMMARY" --variables-output "$GITHUB_OUTPUT"
 
-          pyinstaller ./cura_inst/UltiMaker-Cura.spec
+          pyinstaller ./cura_inst/CuraLE.spec
 
-      - name: Create the Macos dmg (Bash)
+      - name: Create the macOS dmg (Bash)
         run: python ../cura_inst/packaging/MacOS/build_macos.py --source_path ../cura_inst --dist_path . --cura_conan_version ${{ inputs.cura_conan_version }} --filename "${{ steps.prepare-distribution.outputs.INSTALLER_FILENAME }}" --build_dmg --build_pkg --app_name "${{ steps.prepare-distribution.outputs.CURA_APP_NAME }}"
         working-directory: dist
 
@@ -132,7 +132,7 @@ jobs:
 
       - name: Upload the built Package(s)
         if: ${{ always() && ! inputs.private_data }}
-        uses: ultimaker/cura-workflows/.github/actions/upload-conan-package@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/upload-conan-package@main
         with:
           package_name: '*'
 

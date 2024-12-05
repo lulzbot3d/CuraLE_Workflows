@@ -1,4 +1,4 @@
-# Cura LulzBot Edition Automation Scripts and Workflows
+# Cura LulzBot Edition Workflows and Automation Scripts
 
 ## Install LulzBot Conan Config
 
@@ -23,7 +23,7 @@ Most of the workflows now have a `curl` or `wget` command downloading the pip re
 
 ## No Longer Tagging to Create a Release Package
 
-Creating a Conan package release is now done in this repository. See the workflow [`conan-package-release.yml`](https://github.com/lulzbot3d/cura-le-workflows/actions/workflows/conan-package-release.yml) You can specify a Repository and the git reference: `main`, `5.7` or a specific git sha. It will check it out and build a conan-package from that commit.
+Creating a Conan package release is now done in this repository. See the workflow [`conan-package-release.yml`](https://github.com/lulzbot3d/CuraLE_Workflows/actions/workflows/conan-package-release.yml) You can specify a Repository and the git reference: `main`, `5.7` or a specific git sha. It will check it out and build a conan-package from that commit.
 
 This can be done in as a user action manually or in the future automate it, for instance when we create a Release in Draft mode in the CuraLE repository. We can then change the conandata.yml pinning the versions and dispatching this `conan-package-release.yml` workflow for the actual repositories. Wait until the workflows are ready, build the CuraLE release with the newly created conan packages, and upload the binaries to the GH draft release.
 

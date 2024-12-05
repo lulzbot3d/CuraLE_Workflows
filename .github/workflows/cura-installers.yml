@@ -1,4 +1,4 @@
-name: All installers
+name: All Installers
 run-name: ${{ inputs.cura_conan_version }} by @${{ github.actor }}
 
 on:
@@ -51,7 +51,7 @@ jobs:
     secrets: inherit
 
   macos-installer:
-    name: Create MacOS-X64 packages
+    name: Create macOS-X64 packages
     uses: ./.github/workflows/cura-installer-macos.yml
     with:
       cura_conan_version: ${{ inputs.cura_conan_version }}
@@ -64,7 +64,7 @@ jobs:
     secrets: inherit
 
   macos-arm-installer:
-    name: Create MacOS-ARM64 packages
+    name: Create macOS-ARM64 packages
     uses: ./.github/workflows/cura-installer-macos.yml
     with:
       cura_conan_version: ${{ inputs.cura_conan_version }}

@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: Setup the build environment
-        uses: ultimaker/cura-workflows/.github/actions/setup-build-environment@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
         with:
           conan_user: ${{ secrets.CONAN_USER }}
           conan_password: ${{ secrets.CONAN_PASS }}
@@ -80,12 +80,12 @@ jobs:
             dir $pydir/Scripts
             echo "++++"
 
-            conan install --requires "${{ inputs.cura_conan_version }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile installer.jinja -c user.sentry:token="${{ secrets.CURAENGINE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "cura/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "cura/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "cura/*:internal=True"' || '' }}
+            conan install --requires "${{ inputs.cura_conan_version }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile installer.jinja -c user.sentry:token="${{ secrets.CURAENGINE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "curale/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "curale/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "curale/*:internal=True"' || '' }}
 
       # - name: Set Environment variables for Cura (Powershell)
       #   run: echo "${Env:WIX}\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Create the Cura distribution with pyinstaller
+      - name: Create the Cura LE distribution with pyinstaller
         id: prepare-distribution
         shell: cmd
         run: |
@@ -110,14 +110,14 @@ jobs:
             python -m pip install -r cura_inst\packaging\pip_requirements_core_hashes.txt --no-warn-script-location
             python -m pip install -r cura_inst\packaging\pip_requirements_installer_basic.txt --no-warn-script-location
 
-            python Cura-workflows\runner_scripts\prepare_installer.py --os ${{ runner.os }} --architecture X64 ${{ inputs.enterprise && '--enterprise' || '' }} ${{ inputs.private_data && '--internal' || '' }} --summary-output %GITHUB_STEP_SUMMARY% --variables-output %GITHUB_OUTPUT%
+            python CuraLE_Workflows\runner_scripts\prepare_installer.py --os ${{ runner.os }} --architecture X64 ${{ inputs.enterprise && '--enterprise' || '' }} ${{ inputs.private_data && '--internal' || '' }} --summary-output %GITHUB_STEP_SUMMARY% --variables-output %GITHUB_OUTPUT%
 
             echo "+++___+++___+++"
             dir /s \*python*dll
             python -c "import PyQt6.sip; print(PyQt6.sip.__file__)"
             echo "+++___+++___+++"
 
-            pyinstaller cura_inst\UltiMaker-Cura.spec
+            pyinstaller cura_inst\CuraLE.spec
 
       - name: Sign the internal executables
         working-directory: dist/Cura_LulzBot_Edition
@@ -144,7 +144,7 @@ jobs:
 
       - name: Sign the Windows exe installer (Powershell)
         run: |
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f C:\actions-runner\code_sign.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN_CONTAINER }} "${{steps.prepare-distribution.outputs.INSTALLER_FILENAME}}.exe"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc "${{ secrets.WIN_TOKEN }}" "${{steps.prepare-distribution.outputs.INSTALLER_FILENAME}}.exe"
         working-directory: dist
         timeout-minutes: 2
 
@@ -160,12 +160,12 @@ jobs:
         run: |
           $pydir = type ../pydir.txt
           $env:PATH += ";$pydir;$pydir/Scripts"
-          python ..\cura_inst\packaging\msi\create_windows_msi.py --source_path ..\cura_inst --dist_path .\UltiMaker-Cura --filename "${{ steps.prepare-distribution.outputs.INSTALLER_FILENAME }}.msi" --name "${{ steps.prepare-distribution.outputs.CURA_APP_NAME }}" --version "${{ steps.prepare-distribution.outputs.CURA_VERSION_FULL }}"
+          python ..\cura_inst\packaging\msi\create_windows_msi.py --source_path ..\cura_inst --dist_path .\Cura_LulzBot_Edition --filename "${{ steps.prepare-distribution.outputs.INSTALLER_FILENAME }}.msi" --name "${{ steps.prepare-distribution.outputs.CURA_APP_NAME }}" --version "${{ steps.prepare-distribution.outputs.CURA_VERSION_FULL }}"
         working-directory: dist
 
       - name: Sign the Windows msi installer (Powershell)
         run: |
-          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f C:\actions-runner\code_sign.cer /csp "eToken Base Cryptographic Provider" /kc ${{ secrets.WIN_TOKEN_CONTAINER }} "${{steps.prepare-distribution.outputs.INSTALLER_FILENAME}}.msi"
+          & signtool sign /v /fd sha256 /tr http://timestamp.sectigo.com /td sha256 /f D:\actions-runner\fame3d.cer /csp "eToken Base Cryptographic Provider" /kc "${{ secrets.WIN_TOKEN }}" "${{steps.prepare-distribution.outputs.INSTALLER_FILENAME}}.msi"
         working-directory: dist
         timeout-minutes: 2
 
@@ -195,7 +195,7 @@ jobs:
 
       - name: Upload the built Package(s)
         if: ${{ always() && ! inputs.private_data }}
-        uses: ultimaker/cura-workflows/.github/actions/upload-conan-package@main
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/upload-conan-package@main
         with:
           package_name: '*'
           python_set_env_vars: false
