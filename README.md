@@ -3,19 +3,19 @@
 ## Install LulzBot Conan Config
 
 ```bash
-conan config install https://github.com/lulzbot3d/conan-config-le.git
+conan config install https://github.com/lulzbot3d/Conan_LulzBot_Config.git
 ```
 
 ## Pipeline Caching Over Workflows
 
 Most repository workflows have been ported to this one and made reusable to cut down on repeated code. They all have pipeline caching enabled for Conan downloads and Conan data folders. The caching key has a default fallback key. This ensures that the cache is updated with the latest changes on the Artifactory remote server but reuses the previous stored downloads and data, greatly reducing our download bandwidth and flexible costs.
 
-The runner conan-config-le branches have been updated to ensure that the download cache will be in a known location, see:
+The runner Conan_LulzBot_Config branches have been updated to ensure that the download cache will be in a known location, see:
 
-- [Linux](https://github.com/lulzbot3d/conan-config-le/blob/runner/Linux/X64/conan.conf)
-- [macOS \(X64\)](https://github.com/lulzbot3d/conan-config-le/blob/runner/macOS/X64/conan.conf)
-- [macOS \(ARM64\)](https://github.com/lulzbot3d/conan-config-le/blob/runner/macOS/ARM64/conan.conf)
-- [Windows](https://github.com/lulzbot3d/conan-config-le/blob/runner/Windows/X64/conan.conf)
+- [Linux](https://github.com/lulzbot3d/Conan_LulzBot_Config/blob/runner/Linux/X64/conan.conf)
+- [macOS \(X64\)](https://github.com/lulzbot3d/Conan_LulzBot_Config/blob/runner/macOS/X64/conan.conf)
+- [macOS \(ARM64\)](https://github.com/lulzbot3d/Conan_LulzBot_Config/blob/runner/macOS/ARM64/conan.conf)
+- [Windows](https://github.com/lulzbot3d/Conan_LulzBot_Config/blob/runner/Windows/X64/conan.conf)
 
 ## Downloading runner pip Requirements and Helper Scripts
 
