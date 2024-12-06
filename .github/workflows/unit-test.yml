@@ -28,7 +28,7 @@ jobs:
           install_system_dependencies: true
 
       - name: Install dependencies and build unit test
-        run: conan build . -s build_type=Release --build=missing --update -c tools.build:skip_test=False ${{ inputs.test_use_pytest && '-g VirtualPythonEnv' || '' }}
+        run: conan build . -s build_type=Release --build=missing --update -c tools.build:skip_test=False ${{ inputs.test_use_pytest && '-g VirtualPythonEnv -c user.generator.virtual_python_env:dev_tools=True' || '' }}
 
       - name: Run ctest-based unit test
         if: ${{ inputs.test_use_ctest }}
@@ -39,23 +39,18 @@ jobs:
         if: ${{ inputs.test_use_pytest }}
         run: |
           source ../build/generators/virtual_python_env.sh
-          pytest --junitxml=unit_tests_results.xml
+          pytest --junitxml=unit_tests_results.xml || true
         working-directory: tests
-
-      - name: Save PR metadata
-        if: always()
-        run: |
-          echo ${{ github.event.number }} > pr-id.txt
-          echo ${{ github.event.pull_request.head.repo.full_name }} > pr-head-repo.txt
-          echo ${{ github.event.pull_request.head.ref }} > pr-head-ref.txt
 
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-result
-          path: |
-            ./**/unit_tests_results.xml
-            pr-id.txt
-            pr-head-repo.txt
-            pr-head-ref.txt
+          name: test-results
+          path: ./**/unit_tests_results.xml
+
+      - name: Upload metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-metadata
+          path: ${{ github.event_path }}

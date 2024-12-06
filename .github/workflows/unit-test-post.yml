@@ -9,13 +9,13 @@ on:
 
 permissions:
   contents: read
-  issues: write
+  issues: read
   checks: write
   pull-requests: write
 
 jobs:
   publish-test-results:
-    if: ${{ fromJSON(inputs.workflow_run_json).event == 'pull_request' && fromJSON(inputs.workflow_run_json).conclusion == 'success' }}
+    if: ${{ fromJSON(inputs.workflow_run_json).conclusion != 'skipped' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -24,27 +24,13 @@ jobs:
         with:
           github-token: ${{ secrets.CURA_UNIT_TESTS_POST_PAT }}
           run-id: ${{ fromJSON(inputs.workflow_run_json).id }}
-      #
-      # - name: Extract PR details
-      #   id: extract-pr-details
-      #   run: |
-      #     echo "pr_id=$(pr-id.txt)" >> "$GITHUB_OUTPUT"
-      #     echo "pr_head_repo=$(pr-head-repo.txt)" >> "$GITHUB_OUTPUT"
-      #     echo "pr_head_ref=$(pr-head-ref.txt)" >> "$GITHUB_OUTPUT"
-      #
-      # - uses: actions/checkout@v4
-      #   with:
-      #     repository: ${{ steps.extract-pr-details.outputs.pr_head_repo }}
-      #     ref: ${{ steps.extract-pr-details.outputs.pr_head_ref }}
-      #     persist-credentials: false
+          path: artifacts
 
       - name: Publish Unit Test Results
         id: publish-test-results
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          commit: ${{ fromJSON(inputs.workflow_run_json).head_commit.id }}
-          github_token: ${{ secrets.CURA_UNIT_TESTS_POST_PAT }}
-          files: "**/unit_tests_results.xml"
-
-      - name: Conclusion
-        run: echo "Conclusion is ${{ steps.publish-test-results.outputs.json && fromJSON( steps.publish-test-results.outputs.json ).conclusion }}"
+          commit: ${{ fromJSON(inputs.workflow_run_json).head_sha }}
+          files: artifacts/test-results/**/unit_tests_results.xml
+          event_file: artifacts/unit-test-metadata/event.json
+          event_name: ${{ fromJSON(inputs.workflow_run_json).event }}
