@@ -32,11 +32,12 @@ on:
         options:
           - CuraLE
           - UraniumLE
+          - CuraLE_Resources
           - FDM_MaterialsLE
-          - CuraLEBinaryData
+          - CuraLE_Binary_Data
           - CuraEngineLE
-          - CuraEngineLE_grpc_definitions
-          - CuraEngineLE_plugin_gradual_flow
+          - CuraEngineLE_gRPC_Definitions
+          - CuraEngineLE_Plugin_Gradual_Flow
           - SynsepalumDulcificumLE
           - libArcusLE
           - libnest2dLE

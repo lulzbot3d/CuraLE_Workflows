@@ -39,8 +39,8 @@ jobs:
           sed -i "s/version:.*/version: \"$PACKAGE_VERSION\"/g" conandata.yml
           sed -i "s/\"uraniumle\/.*/\"uraniumle\/$PACKAGE_VERSION\"/g" conandata.yml
           sed -i "s/\"curale_resources\/.*/\"curale_resources\/$PACKAGE_VERSION\"/g" conandata.yml
-          sed -i "s/\"curaenginele\/.*/\"curaenginele\/$PACKAGE_VERSION\"/g" conandata.yml
-          sed -i "s/\"curalebinarydata\/.*/\"curalebinarydata\/$PACKAGE_VERSION\"/g" conandata.yml
+          sed -i "s/\"curaengine\/.*/\"curaengine\/$PACKAGE_VERSION\"/g" conandata.yml
+          sed -i "s/\"curale_binary_data\/.*/\"curale_binary_data\/$PACKAGE_VERSION\"/g" conandata.yml
           sed -i "s/\"fdm_materialsle\/.*/\"fdm_materialsle\/$PACKAGE_VERSION\"/g" conandata.yml
 
       - name: Update resources conan package version
