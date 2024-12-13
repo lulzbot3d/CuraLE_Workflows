@@ -5,13 +5,19 @@ on:
   workflow_call:
     inputs:
       cura_conan_version:
-        description: 'Cura LE Conan Version'
-        default: 'curale/latest@lulzbot/testing'
-        required: true
+        description: 'CuraLE Conan Version'
+        default: ''
+        required: false
+        type: string
+
+      package_overrides:
+        description: 'List of specific packages to be used (space-separated)'
+        default: ''
+        required: false
         type: string
 
       conan_args:
-        description: 'Conan args, e.g. --requires'
+        description: 'Conan args'
         default: ''
         required: false
         type: string
@@ -49,6 +55,7 @@ jobs:
 
     steps:
       - name: Setup the build environment
+        id: setup-environment
         uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
         with:
           conan_user: ${{ secrets.CONAN_USER }}
@@ -56,6 +63,13 @@ jobs:
           private_data: ${{ inputs.private_data }}
           install_system_dependencies: true
           repository_path: _cura_sources # we don't want the actual sources to interfere with the built conan package
+
+      - name: Set packages overrides
+        id: set-overrides
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/set-package-overrides@main
+        with:
+          package_overrides: ${{ inputs.package_overrides }}
+          profile: installer.jinja
 
       - name: Install AppImage builder
         run: |
@@ -66,7 +80,7 @@ jobs:
         run: echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
 
       - name: Gather/build the packages
-        run: conan install --requires "${{ inputs.cura_conan_version }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile installer.jinja -c user.sentry:token="${{ secrets.CURAENGINE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "curale/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "curale/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "curale/*:internal=True"' || '' }}
+        run: conan install --requires "${{ inputs.cura_conan_version != '' && inputs.cura_conan_version || format('curale/{0}@lulzbot/testing', steps.setup-environment.outputs.package_version) }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile ${{ steps.set-overrides.outputs.profile }} -c user.sentry:token="${{ secrets.CURAENGINELE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "curale/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "curale/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "curale/*:internal=True"' || '' }}
 
       - name: Create the Cura LE distribution with pyinstaller
         id: prepare-distribution

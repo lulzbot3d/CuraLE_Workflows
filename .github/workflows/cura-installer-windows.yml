@@ -5,13 +5,19 @@ on:
   workflow_call:
     inputs:
       cura_conan_version:
-        description: 'Cura LE Conan Version'
-        default: 'curale/latest@lulzbot/testing'
-        required: true
+        description: 'Cura Conan Version'
+        default: ''
+        required: false
+        type: string
+
+      package_overrides:
+        description: 'List of specific packages to be used (space-separated)'
+        default: ''
+        required: false
         type: string
 
       conan_args:
-        description: 'Conan args: eq.: --requires'
+        description: 'Conan args'
         default: ''
         required: false
         type: string
@@ -45,7 +51,7 @@ permissions:
 env:
   WIN_CERT_INSTALLER_CER: ${{ secrets.WIN_CERT_INSTALLER_CER }}
   WIN_CERT_INSTALLER_CER_PASS: ${{ secrets.WIN_CERT_INSTALLER_CER_PASS }}
-  SENTRY_TOKEN: ${{ secrets.CURAENGINE_SENTRY_TOKEN }}
+  SENTRY_TOKEN: ${{ secrets.CURAENGINELE_SENTRY_TOKEN }}
   # win-cert-installer is probably not nescesary at all: went out the moment we started using signkey again on our own runner
   # sentry debug symbols seem to only be uploaded for linux?
 
@@ -60,6 +66,7 @@ jobs:
 
     steps:
       - name: Setup the build environment
+        id: setup-environment
         uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
         with:
           conan_user: ${{ secrets.CONAN_USER }}
@@ -69,11 +76,18 @@ jobs:
           repository_path: _cura_sources # we don't want the actual sources to interfere with the built conan package
           python_set_env_vars: false
 
+      - name: Set packages overrides
+        id: set-overrides
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/set-package-overrides@main
+        with:
+          package_overrides: ${{ inputs.package_overrides }}
+          profile: installer.jinja
+
       - name: Gather/build the packages
         run: |
             $pydir = type pydir.txt
             $env:PATH += ";$pydir;$pydir/Scripts"
-            conan install --requires "${{ inputs.cura_conan_version }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile installer.jinja -c user.sentry:token="${{ secrets.CURAENGINE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "curale/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "curale/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "curale/*:internal=True"' || '' }}
+            conan install --requires "${{ inputs.cura_conan_version != '' && inputs.cura_conan_version || format('curale/{0}@lulzbot/testing', steps.setup-environment.outputs.package_version) }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile ${{ steps.set-overrides.outputs.profile }} -c user.sentry:token="${{ secrets.CURAENGINELE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "curale/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "curale/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "curale/*:internal=True"' || '' }}
 
       - name: Create the Cura LE distribution with pyinstaller
         id: prepare-distribution
@@ -182,7 +196,6 @@ jobs:
         uses: lulzbot3d/CuraLE_Workflows/.github/actions/upload-conan-package@main
         with:
           package_name: '*'
-          python_set_env_vars: false
 
       - name: Clean local cache
         if: ${{ always() && startsWith(inputs.operating_system, 'self-hosted') }}

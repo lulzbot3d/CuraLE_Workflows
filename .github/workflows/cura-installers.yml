@@ -5,7 +5,12 @@ on:
   workflow_call:
     inputs:
       cura_conan_version:
-        required: true
+        default: ''
+        required: false
+        type: string
+      package_overrides:
+        default: ''
+        required: false
         type: string
       conan_args:
         default: ''
@@ -31,6 +36,7 @@ jobs:
     uses: ./.github/workflows/cura-installer-windows.yml
     with:
       cura_conan_version: ${{ inputs.cura_conan_version }}
+      package_overrides: ${{ inputs.package_overrides }}
       conan_args: ${{ inputs.conan_args }}
       enterprise: ${{ inputs.enterprise == 'true' }}
       staging: ${{ inputs.staging == 'true' }}
@@ -43,6 +49,7 @@ jobs:
     uses: ./.github/workflows/cura-installer-linux.yml
     with:
       cura_conan_version: ${{ inputs.cura_conan_version }}
+      package_overrides: ${{ inputs.package_overrides }}
       conan_args: ${{ inputs.conan_args }}
       enterprise: ${{ inputs.enterprise == 'true' }}
       staging: ${{ inputs.staging == 'true' }}
@@ -55,6 +62,7 @@ jobs:
     uses: ./.github/workflows/cura-installer-macos.yml
     with:
       cura_conan_version: ${{ inputs.cura_conan_version }}
+      package_overrides: ${{ inputs.package_overrides }}
       conan_args: ${{ inputs.conan_args }}
       enterprise: ${{ inputs.enterprise == 'true' }}
       staging: ${{ inputs.staging == 'true' }}
@@ -68,6 +76,7 @@ jobs:
     uses: ./.github/workflows/cura-installer-macos.yml
     with:
       cura_conan_version: ${{ inputs.cura_conan_version }}
+      package_overrides: ${{ inputs.package_overrides }}
       conan_args: ${{ inputs.conan_args }}
       enterprise: ${{ inputs.enterprise == 'true' }}
       staging: ${{ inputs.staging == 'true' }}
