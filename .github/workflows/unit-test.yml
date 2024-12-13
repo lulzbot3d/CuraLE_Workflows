@@ -13,6 +13,11 @@ on:
         default: false
         type: boolean
 
+      conan_extra_args:
+        required: false
+        default: ""
+        type: string
+
 permissions:
   contents: read
 
@@ -28,17 +33,20 @@ jobs:
           install_system_dependencies: true
 
       - name: Install dependencies and build unit test
-        run: conan build . -s build_type=Release --build=missing --update -c tools.build:skip_test=False ${{ inputs.test_use_pytest && '-g VirtualPythonEnv -c user.generator.virtual_python_env:dev_tools=True' || '' }}
+        run: conan build . -s build_type=Release --build=missing --update -c tools.build:skip_test=False ${{ inputs.test_use_pytest && '-g VirtualPythonEnv -c user.generator.virtual_python_env:dev_tools=True' || '' }} ${{ inputs.conan_extra_args }}
 
       - name: Run ctest-based unit test
         if: ${{ inputs.test_use_ctest }}
-        run: ctest --output-junit unit_tests_results.xml
+        run: |
+          . ../generators/conanrun.sh
+          ctest --output-junit unit_tests_results.xml
         working-directory: build/Release/tests
 
       - name: Run pytest-based unit test
         if: ${{ inputs.test_use_pytest }}
         run: |
-          source ../build/generators/virtual_python_env.sh
+          . ../generators/conanrun.sh
+          . ../build/generators/virtual_python_env.sh
           pytest --junitxml=unit_tests_results.xml || true
         working-directory: tests
 

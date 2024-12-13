@@ -1,0 +1,49 @@
+name: NPM package
+
+on:
+  workflow_call:
+    inputs:
+      package_version_full:
+        required: true
+        type: string
+
+      private_data:
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Setup the build environment
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
+        with:
+          private_data: ${{ inputs.private_data }}
+          conan_user: ${{ secrets.CONAN_USER }}
+          conan_password: ${{ secrets.CONAN_PASS }}
+          install_system_dependencies: true
+          repository_path: _sources
+
+      - name: Gather/build the packages
+        run: conan install --requires "${{ inputs.package_version_full }}" -pr:h cura_wasm.jinja -g npm --build=missing --update -of .
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@lulzbot3d'
+
+      - name: Publish to GitHub Packages
+        run: |
+          npm publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload all packages on a push to main
+        if: ${{ github.ref_name == 'main' && github.event_name == 'push' }}
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/upload-conan-package@main
