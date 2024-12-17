@@ -1,0 +1,43 @@
+name: lint-formatter
+
+on:
+  workflow_call:
+    inputs:
+      file_patterns:
+        required: true
+        type: string
+      command:
+        required: true
+        type: string
+      commit_message:
+        required: true
+        type: string
+
+jobs:
+  lint-formatter-job:
+    name: Auto-apply clang-format
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup the build environment
+        uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
+
+      - uses: greguintow/get-diff-action@v7
+        with:
+          PATTERNS: ${{ inputs.file_patterns }}
+
+      - name: Format files
+        if: env.GIT_DIFF && !env.MATCHED_FILES
+        run: ${{ inputs.command }} ${{ env.GIT_DIFF_FILTERED }}
+
+      - name: Convert files list
+        id: convert-files-list
+        if: env.GIT_DIFF && !env.MATCHED_FILES
+        run: echo "files_list=${{ env.GIT_DIFF_FILTERED }}" | sed "s/'//g" >> $GITHUB_OUTPUT
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        if: env.GIT_DIFF && !env.MATCHED_FILES
+        with:
+          commit_message: ${{ inputs.commit_message }}
+          file_pattern: ${{ steps.convert-files-list.outputs.files_list }}
+

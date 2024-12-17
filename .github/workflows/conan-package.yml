@@ -60,6 +60,7 @@ jobs:
     uses: ./.github/workflows/conan-recipe-version.yml
     with:
       conan_recipe_root: ${{ inputs.conan_recipe_root }}
+      internal: ${{ inputs.private_data }}
 
   conan-recipe-export-specific:
     name: Upload specific package recipe
@@ -96,7 +97,7 @@ jobs:
       platform_wasm: ${{ inputs.platform_wasm }}
 
   conan-package-create:
-    name: Create and upload package
+    name: Build package
     needs: [ conan-recipe-version, conan-recipe-export-latest, make-runners-list ]
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -113,8 +114,3 @@ jobs:
 
       - name: Create the Package (binaries)
         run: conan create ${{ inputs.conan_recipe_root }} --version ${{ needs.conan-recipe-version.outputs.version_base }} --user ${{ needs.conan-recipe-version.outputs.user }} --channel ${{ needs.conan-recipe-version.outputs.channel }} ${{ inputs.conan_extra_args }} --build=missing ${{ matrix.conan_extra_args }} -c tools.build:skip_test=True
-
-      - name: Upload the Package
-        uses: lulzbot3d/CuraLE_Workflows/.github/actions/upload-conan-package@main
-        with:
-          private_data: ${{ inputs.private_data }}
