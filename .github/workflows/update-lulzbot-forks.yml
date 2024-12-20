@@ -15,26 +15,26 @@ jobs:
     name: Upload package recipe
     runs-on: ubuntu-latest
     outputs:
-      Conan_LulzBot_Config: ${{ steps.check_commits.outputs.Conan_LulzBot_Config }}
-      Conan_LulzBot_Index: ${{ steps.check_commits.outputs.Conan_LulzBot_Index }}
-      CuraEngineLE: ${{ steps.check_commits.outputs.CuraEngineLE }}
-      CuraEngineLE_Benchmarks: ${{ steps.check_commits.outputs.CuraEngineLE_Benchmarks }}
-      CuraEngineLE_gRPC_Definitions: ${{ steps.check_commits.outputs.CuraEngineLE_gRPC_Definitions }}
-      CuraEngineLE_Plugin_Infill_Generate: ${{ steps.check_commits.outputs.CuraEngineLE_Plugin_Infill_Generate }}
-      CuraLE: ${{ steps.check_commits.outputs.CuraLE }}
-      CuraLE_Binary_Data: ${{ steps.check_commits.outputs.CuraLE_Binary_Data }}
-      CuraLE_Workflows: ${{ steps.check_commits.outputs.CuraLE_Workflows }}
-      FDM_MaterialsLE: ${{ steps.check_commits.outputs.FDM_MaterialsLE }}
-      libArcusLE: ${{ steps.check_commits.outputs.libArcusLE }}
-      libCharonLE: ${{ steps.check_commits.outputs.libCharonLE }}
-      libnest2dLE: ${{ steps.check_commits.outputs.libnest2dLE }}
-      libSavitarLE: ${{ steps.check_commits.outputs.libSavitarLE }}
-      pyArcusLE: ${{ steps.check_commits.outputs.pyArcusLE }}
-      pynest2dLE: ${{ steps.check_commits.outputs.pynest2dLE }}
-      pySavitarLE: ${{ steps.check_commits.outputs.pySavitarLE }}
-      ScriptaLE: ${{ steps.check_commits.outputs.ScriptaLE }}
-      SynsepalumDulcificumLE: ${{ steps.check_commits.outputs.SynsepalumDulcificumLE }}
-      UraniumLE: ${{ steps.check_commits.outputs.UraniumLE }}
+      Conan_LulzBot_Config: ${{ steps.sync.outputs.Conan_LulzBot_Config }}
+      Conan_LulzBot_Index: ${{ steps.sync.outputs.Conan_LulzBot_Index }}
+      CuraEngineLE: ${{ steps.sync.outputs.CuraEngineLE }}
+      CuraEngineLE_Benchmarks: ${{ steps.sync.outputs.CuraEngineLE_Benchmarks }}
+      CuraEngineLE_gRPC_Definitions: ${{ steps.sync.outputs.CuraEngineLE_gRPC_Definitions }}
+      CuraEngineLE_Plugin_Infill_Generate: ${{ steps.sync.outputs.CuraEngineLE_Plugin_Infill_Generate }}
+      CuraLE: ${{ steps.sync.outputs.CuraLE }}
+      CuraLE_Binary_Data: ${{ steps.sync.outputs.CuraLE_Binary_Data }}
+      CuraLE_Workflows: ${{ steps.sync.outputs.CuraLE_Workflows }}
+      FDM_MaterialsLE: ${{ steps.sync.outputs.FDM_MaterialsLE }}
+      libArcusLE: ${{ steps.sync.outputs.libArcusLE }}
+      libCharonLE: ${{ steps.sync.outputs.libCharonLE }}
+      libnest2dLE: ${{ steps.sync.outputs.libnest2dLE }}
+      libSavitarLE: ${{ steps.sync.outputs.libSavitarLE }}
+      pyArcusLE: ${{ steps.sync.outputs.pyArcusLE }}
+      pynest2dLE: ${{ steps.sync.outputs.pynest2dLE }}
+      pySavitarLE: ${{ steps.sync.outputs.pySavitarLE }}
+      ScriptaLE: ${{ steps.sync.outputs.ScriptaLE }}
+      SynsepalumDulcificumLE: ${{ steps.sync.outputs.SynsepalumDulcificumLE }}
+      UraniumLE: ${{ steps.sync.outputs.UraniumLE }}
     strategy:
       matrix:
         repos:
@@ -114,17 +114,29 @@ jobs:
 
       - name: Pull (Fast-Forward) upstream changes
         id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
-        with:
-          target_sync_branch: ulti-main
-          target_repo_token: ${{ secrets.FETCH_UPSTREAM_PAT}}
-          upstream_sync_repo: Ultimaker/${{ matrix.repos.ulti }}
-          upstream_sync_branch: ${{ matrix.repos.branch}}
+        run: |
+          git remote add ulti https://github.com/Ultimaker/${{ matrix.repos.ulti }}.git
+          git fetch ulti
 
-      - name: Check for new commits
-        id: check_commits
-        if: steps.sync.outputs.has_new_commits
-        run: echo "${{ matrix.repos.fork }}=Had new commits!" >> "$GITHUB_OUTPUT"
+          # Check for new commits
+          ULTI_HASH=$(git rev-parse "ulti/${{ matrix.repos.branch }}")
+          git fetch origin ulti-main
+
+          if [ -z "${ULTI_HASH}"]; then
+            echo "${{ matrix.repos.fork }}=Error fetching upstream hash." >> "$GITHUB_OUTPUT"
+          elif [ "$(git branch "ulti-main" --contains="${ULTI_HASH}")" ]; then
+            echo "${{ matrix.repos.fork }}=No new commits." >> "$GITHUB_OUTPUT"
+          else
+            echo "${{ matrix.repos.fork }}=New commits upstream!" >> "$GITHUB_OUTPUT"
+
+            git pull --no-edit --ff-only ulti "${{ matrix.repos.branch }}"
+            git push origin ulti-main
+            CS=$?
+
+            if [ "${CS}" -ne 0 ]; then
+              echo "${{ matrix.repos.fork }}=Error pushing to origin." >> "$GITHUB_OUTPUT"
+            fi
+          fi
 
   post-update-results:
     name: Post Update Results
