@@ -1,0 +1,174 @@
+name: Update LulzBot Forks
+
+on:
+  schedule:
+    # Runs at 7:00 CST on Mondays, Wednesdays, and Fridays
+    - cron: '0 13 * * 1,3,5'
+
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository'
+        default: 'CuraLE'
+        type: choice
+        options:
+          - CuraLE
+          - UraniumLE
+          - CuraLE_Resources
+          - FDM_MaterialsLE
+          - CuraLE_Binary_Data
+          - CuraEngineLE
+          - CuraEngineLE_gRPC_Definitions
+          - CuraEngineLE_Plugin_Gradual_Flow
+          - SynsepalumDulcificumLE
+          - libArcusLE
+          - libnest2dLE
+          - libSavitarLE
+          - pyArcusLE
+          - pynest2dLE
+          - pySavitarLE
+
+      branch:
+        description: 'Branch'
+        required: false
+        default: 'main'
+        type: string
+
+      conan_recipe_root:
+        description: 'Path to conanfile.py'
+        required: false
+        default: "."
+        type: string
+
+      private_data:
+        description: 'Export to private data'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  update-lulzbot-forks:
+    name: Upload package recipe
+    runs-on: ubuntu-latest
+    outputs:
+      Conan_LulzBot_Config: ${{ steps.check_commits.outputs.Conan_LulzBot_Config }}
+      Conan_LulzBot_Index: ${{ steps.check_commits.outputs.Conan_LulzBot_Index }}
+      CuraEngineLE: ${{ steps.check_commits.outputs.CuraEngineLE }}
+      CuraEngineLE_Benchmarks: ${{ steps.check_commits.outputs.CuraEngineLE_Benchmarks }}
+      CuraEngineLE_gRPC_Definitions: ${{ steps.check_commits.outputs.CuraEngineLE_gRPC_Definitions }}
+      CuraEngineLE_Plugin_Infill_Generate: ${{ steps.check_commits.outputs.CuraEngineLE_Plugin_Infill_Generate }}
+      CuraLE: ${{ steps.check_commits.outputs.CuraLE }}
+      CuraLE_Binary_Data: ${{ steps.check_commits.outputs.CuraLE_Binary_Data }}
+      CuraLE_Workflows: ${{ steps.check_commits.outputs.CuraLE_Workflows }}
+      FDM_MaterialsLE: ${{ steps.check_commits.outputs.FDM_MaterialsLE }}
+      libArcusLE: ${{ steps.check_commits.outputs.libArcusLE }}
+      libCharonLE: ${{ steps.check_commits.outputs.libCharonLE }}
+      libnest2dLE: ${{ steps.check_commits.outputs.libnest2dLE }}
+      libSavitarLE: ${{ steps.check_commits.outputs.libSavitarLE }}
+      pyArcusLE: ${{ steps.check_commits.outputs.pyArcusLE }}
+      pynest2dLE: ${{ steps.check_commits.outputs.pynest2dLE }}
+      pySavitarLE: ${{ steps.check_commits.outputs.pySavitarLE }}
+      ScriptaLE: ${{ steps.check_commits.outputs.ScriptaLE }}
+      SynsepalumDulcificumLE: ${{ steps.check_commits.outputs.SynsepalumDulcificumLE }}
+      UraniumLE: ${{ steps.check_commits.outputs.UraniumLE }}
+    strategy:
+      matrix:
+        repos:
+          - fork: Conan_LulzBot_Config
+            ulti: conan-config
+            branch: main
+          - fork: Conan_LulzBot_Index
+            ulti: conan-ultimaker-index
+            branch: main
+
+          - fork: CuraEngineLE
+            ulti: CuraEngine
+            branch: main
+          - fork: CuraEngineLE_Benchmarks
+            ulti: CuraEngineBenchmarks
+            branch: main
+          - fork: CuraEngineLE_gRPC_Definitions
+            ulti: CuraEngine_grpc_definitions
+            branch: main
+          - fork: CuraEngineLE_Plugin_Infill_Generate
+            ulti: CuraEngine_plugin_infill_generate
+            branch: main
+
+          - fork: CuraLE
+            ulti: Cura
+            branch: main
+          - fork: CuraLE_Binary_Data
+            ulti: cura_binary_data
+            branch: main
+          - fork: CuraLE_Workflows
+            ulti: cura-workflows
+            branch: main
+          - fork: FDM_MaterialsLE
+            ulti: fdm_materials
+            branch: master
+
+          - fork: libArcusLE
+            ulti: libArcus
+            branch: main
+          - fork: libCharonLE
+            ulti: libCharon
+            branch: master/s-line
+          - fork: libnest2dLE
+            ulti: libnest2d
+            branch: main
+          - fork: libSavitarLE
+            ulti: libSavitar
+            branch: main
+
+          - fork: pyArcusLE
+            ulti: pyArcus
+            branch: main
+          - fork: pynest2dLE
+            ulti: pynest2d
+            branch: main
+          - fork: pySavitarLE
+            ulti: pySavitar
+            branch: main
+
+          - fork: ScriptaLE
+            ulti: Scripta_public
+            branch: main
+          - fork: SynsepalumDulcificumLE
+            ulti: synsepalum_dulcificum
+            branch: main
+
+          - fork: UraniumLE
+            ulti: Uranium
+            branch: main
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          repository: lulzbot3d/${{ matrix.repos.fork }}
+          ref: 'ulti-main'
+          token: ${{ secrets.FETCH_UPSTREAM_PAT }}
+
+      - name: Pull (Fast-Forward) upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v2.1
+        with:
+          upstream_repository: Ultimaker/${{ matrix.repos.ulti }}
+          upstream_branch: ${{ matrix.repos.branch}}
+          target_branch: ulti-main
+          git_pull_args: --ff-only
+
+      - name: Check for new commits
+        id: check_commits
+        if: steps.sync.outputs.has_new_commits
+        run: echo "${{ matrix.repos.fork }}=Had new commits!" >> "$GITHUB_OUTPUT"
+
+  post-update-results:
+    name: Post Update Results
+    runs-on: ubuntu-latest
+    needs: [update-lulzbot-forks]
+    steps:
+      - name: Post Results
+        run: echo ' ${{ toJSON(needs.update-lulzbot-forks.outputs) }}'
