@@ -3,9 +3,9 @@ name: Update LulzBot Forks
 on:
   workflow_dispatch:
 
-  schedule:
+  # schedule:
     # Runs at 7:00 CST on Mondays, Wednesdays, and Fridays
-    - cron: '0 13 * * 1,3,5'
+    # - cron: '0 13 * * 1,3,5'
 
 permissions:
   contents: read
