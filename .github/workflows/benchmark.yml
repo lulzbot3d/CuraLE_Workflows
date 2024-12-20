@@ -71,8 +71,8 @@ jobs:
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: ${{ inputs.name }}
-          output-file-path: ${{ inputs.output_file_path }}
           gh-repository: github.com/lulzbot3d/CuraEngineLEBenchmarks
+          output-file-path: build/Release/${{ inputs.output_file_path }}
           gh-pages-branch: main
           benchmark-data-dir-path: ${{ inputs.data_dir }}
           tool: ${{ inputs.tool }}
