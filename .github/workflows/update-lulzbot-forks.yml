@@ -40,7 +40,7 @@ jobs:
         repos:
           - fork: Conan_LulzBot_Config
             ulti: conan-config
-            branch: main
+            branch: master
           - fork: Conan_LulzBot_Index
             ulti: conan-ultimaker-index
             branch: main
@@ -62,7 +62,7 @@ jobs:
             ulti: Cura
             branch: main
           - fork: CuraLE_Binary_Data
-            ulti: cura_binary_data
+            ulti: cura-binary-data
             branch: main
           - fork: CuraLE_Workflows
             ulti: cura-workflows
@@ -114,12 +114,12 @@ jobs:
 
       - name: Pull (Fast-Forward) upstream changes
         id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v2.1
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
         with:
-          upstream_repository: Ultimaker/${{ matrix.repos.ulti }}
-          upstream_branch: ${{ matrix.repos.branch}}
-          target_branch: ulti-main
-          git_pull_args: --ff-only
+          target_sync_branch: ulti-main
+          target_repo_token: ${{ secrets.FETCH_UPSTREAM_PAT}}
+          upstream_sync_repo: Ultimaker/${{ matrix.repos.ulti }}
+          upstream_sync_branch: ${{ matrix.repos.branch}}
 
       - name: Check for new commits
         id: check_commits
