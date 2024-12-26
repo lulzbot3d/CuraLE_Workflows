@@ -53,7 +53,7 @@ jobs:
       conan_args: ${{ inputs.conan_args }}
       enterprise: ${{ inputs.enterprise == 'true' }}
       staging: ${{ inputs.staging == 'true' }}
-      operating_system: self-hosted-Ubuntu22-X64
+      operating_system: ubuntu-latest
       private_data: ${{ inputs.private_data }}
     secrets: inherit
 
@@ -67,7 +67,7 @@ jobs:
       enterprise: ${{ inputs.enterprise == 'true' }}
       staging: ${{ inputs.staging == 'true' }}
       architecture: X64
-      operating_system: self-hosted-X64
+      operating_system: macos-latest
       private_data: ${{ inputs.private_data }}
     secrets: inherit
 
@@ -81,6 +81,6 @@ jobs:
       enterprise: ${{ inputs.enterprise == 'true' }}
       staging: ${{ inputs.staging == 'true' }}
       architecture: ARM64
-      operating_system: self-hosted-ARM64
+      operating_system: macos-latest
       private_data: ${{ inputs.private_data }}
     secrets: inherit
