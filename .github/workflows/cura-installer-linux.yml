@@ -79,6 +79,7 @@ jobs:
       - name: Configure GPG Key
         run: |
           export GPG_TTY=$(tty)
+          gpg --list-keys
           mkdir ~/.gnupg/private-keys-v1.d
           echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
 
