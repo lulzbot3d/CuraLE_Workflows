@@ -82,6 +82,7 @@ jobs:
           gpg --list-keys
           mkdir ~/.gnupg/private-keys-v1.d
           echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
+          echo "default-key ${{ secrets.GPG_KEY }}" >> ~/.gnupg/gpg.conf
 
       - name: Gather/build the packages
         run: conan install --requires "${{ inputs.cura_conan_version != '' && inputs.cura_conan_version || format('curale/{0}@lulzbot/testing', steps.setup-environment.outputs.package_version) }}" ${{ inputs.conan_args }} --build=missing --update -of cura_inst --deployer-package="*" --profile ${{ steps.set-overrides.outputs.profile }} -c user.sentry:token="${{ secrets.CURAENGINELE_SENTRY_TOKEN }}" ${{ inputs.enterprise && '-o "curale/*:enterprise=True"' || '' }} ${{ inputs.staging && '-o "curale/*:staging=True"' || '' }} ${{ inputs.private_data && '-o "curale/*:internal=True"' || '' }}
