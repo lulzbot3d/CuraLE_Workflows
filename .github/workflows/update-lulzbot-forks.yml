@@ -1,7 +1,20 @@
 name: Update LulzBot Forks
 
 on:
-  workflow_dispatch:
+
+  workflow_call:
+    inputs:
+      repo:
+        description: 'UltiMaker repository'
+        required: true
+        type: string
+        default: 'Cura'
+
+      branch:
+        description: 'Branch of UltiMaker repository to pull from'
+        required: false
+        type: string
+        default: 'main'
 
   # schedule:
     # Runs at 7:00 CST on Mondays, Wednesdays, and Fridays
@@ -14,134 +27,103 @@ jobs:
   update-lulzbot-forks:
     name: Upload package recipe
     runs-on: ubuntu-latest
-    outputs:
-      Conan_LulzBot_Config: ${{ steps.sync.outputs.Conan_LulzBot_Config }}
-      Conan_LulzBot_Index: ${{ steps.sync.outputs.Conan_LulzBot_Index }}
-      CuraEngineLE: ${{ steps.sync.outputs.CuraEngineLE }}
-      CuraEngineLE_Benchmarks: ${{ steps.sync.outputs.CuraEngineLE_Benchmarks }}
-      CuraEngineLE_gRPC_Definitions: ${{ steps.sync.outputs.CuraEngineLE_gRPC_Definitions }}
-      CuraEngineLE_Plugin_Infill_Generate: ${{ steps.sync.outputs.CuraEngineLE_Plugin_Infill_Generate }}
-      CuraLE: ${{ steps.sync.outputs.CuraLE }}
-      CuraLE_Binary_Data: ${{ steps.sync.outputs.CuraLE_Binary_Data }}
-      CuraLE_Workflows: ${{ steps.sync.outputs.CuraLE_Workflows }}
-      FDM_MaterialsLE: ${{ steps.sync.outputs.FDM_MaterialsLE }}
-      libArcusLE: ${{ steps.sync.outputs.libArcusLE }}
-      libCharonLE: ${{ steps.sync.outputs.libCharonLE }}
-      libnest2dLE: ${{ steps.sync.outputs.libnest2dLE }}
-      libSavitarLE: ${{ steps.sync.outputs.libSavitarLE }}
-      pyArcusLE: ${{ steps.sync.outputs.pyArcusLE }}
-      pynest2dLE: ${{ steps.sync.outputs.pynest2dLE }}
-      pySavitarLE: ${{ steps.sync.outputs.pySavitarLE }}
-      ScriptaLE: ${{ steps.sync.outputs.ScriptaLE }}
-      SynsepalumDulcificumLE: ${{ steps.sync.outputs.SynsepalumDulcificumLE }}
-      UraniumLE: ${{ steps.sync.outputs.UraniumLE }}
-    strategy:
-      matrix:
-        repos:
-          - fork: Conan_LulzBot_Config
-            ulti: conan-config
-            branch: master
-          - fork: Conan_LulzBot_Index
-            ulti: conan-ultimaker-index
-            branch: main
+    # strategy:
+    #   matrix:
+    #     repos:
+    #       - fork: Conan_LulzBot_Config
+    #         ulti: conan-config
+    #         branch: master
+    #       - fork: Conan_LulzBot_Index
+    #         ulti: conan-ultimaker-index
+    #         branch: main
 
-          - fork: CuraEngineLE
-            ulti: CuraEngine
-            branch: main
-          - fork: CuraEngineLE_Benchmarks
-            ulti: CuraEngineBenchmarks
-            branch: main
-          - fork: CuraEngineLE_gRPC_Definitions
-            ulti: CuraEngine_grpc_definitions
-            branch: main
-          - fork: CuraEngineLE_Plugin_Infill_Generate
-            ulti: CuraEngine_plugin_infill_generate
-            branch: main
+    #       - fork: CuraEngineLE
+    #         ulti: CuraEngine
+    #         branch: main
+    #       - fork: CuraEngineLE_Benchmarks
+    #         ulti: CuraEngineBenchmarks
+    #         branch: main
+    #       - fork: CuraEngineLE_gRPC_Definitions
+    #         ulti: CuraEngine_grpc_definitions
+    #         branch: main
+    #       - fork: CuraEngineLE_Plugin_Infill_Generate
+    #         ulti: CuraEngine_plugin_infill_generate
+    #         branch: main
 
-          - fork: CuraLE
-            ulti: Cura
-            branch: main
-          - fork: CuraLE_Binary_Data
-            ulti: cura-binary-data
-            branch: main
-          - fork: CuraLE_Workflows
-            ulti: cura-workflows
-            branch: main
-          - fork: FDM_MaterialsLE
-            ulti: fdm_materials
-            branch: master
+    #       - fork: CuraLE
+    #         ulti: Cura
+    #         branch: main
+    #       - fork: CuraLE_Binary_Data
+    #         ulti: cura-binary-data
+    #         branch: main
+    #       - fork: CuraLE_Workflows
+    #         ulti: cura-workflows
+    #         branch: main
+    #       - fork: FDM_MaterialsLE
+    #         ulti: fdm_materials
+    #         branch: master
 
-          - fork: libArcusLE
-            ulti: libArcus
-            branch: main
-          - fork: libCharonLE
-            ulti: libCharon
-            branch: master/s-line
-          - fork: libnest2dLE
-            ulti: libnest2d
-            branch: main
-          - fork: libSavitarLE
-            ulti: libSavitar
-            branch: main
+    #       - fork: libArcusLE
+    #         ulti: libArcus
+    #         branch: main
+    #       - fork: libCharonLE
+    #         ulti: libCharon
+    #         branch: master/s-line
+    #       - fork: libnest2dLE
+    #         ulti: libnest2d
+    #         branch: main
+    #       - fork: libSavitarLE
+    #         ulti: libSavitar
+    #         branch: main
 
-          - fork: pyArcusLE
-            ulti: pyArcus
-            branch: main
-          - fork: pynest2dLE
-            ulti: pynest2d
-            branch: main
-          - fork: pySavitarLE
-            ulti: pySavitar
-            branch: main
+    #       - fork: pyArcusLE
+    #         ulti: pyArcus
+    #         branch: main
+    #       - fork: pynest2dLE
+    #         ulti: pynest2d
+    #         branch: main
+    #       - fork: pySavitarLE
+    #         ulti: pySavitar
+    #         branch: main
 
-          - fork: ScriptaLE
-            ulti: Scripta_public
-            branch: main
-          - fork: SynsepalumDulcificumLE
-            ulti: synsepalum_dulcificum
-            branch: main
+    #       - fork: ScriptaLE
+    #         ulti: Scripta_public
+    #         branch: main
+    #       - fork: SynsepalumDulcificumLE
+    #         ulti: synsepalum_dulcificum
+    #         branch: main
 
-          - fork: UraniumLE
-            ulti: Uranium
-            branch: main
+    #       - fork: UraniumLE
+    #         ulti: Uranium
+    #         branch: main
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: lulzbot3d/${{ matrix.repos.fork }}
           ref: 'ulti-main'
           token: ${{ secrets.FETCH_UPSTREAM_PAT }}
 
       - name: Pull (Fast-Forward) upstream changes
         id: sync
         run: |
-          git remote add ulti https://github.com/Ultimaker/${{ matrix.repos.ulti }}.git
+          git remote add ulti https://github.com/Ultimaker/${{ inputs.repo }}.git
           git fetch ulti
 
           # Check for new commits
-          ULTI_HASH=$(git rev-parse "ulti/${{ matrix.repos.branch }}")
+          ULTI_HASH=$(git rev-parse "ulti/${{ inputs.branch }}")
           git fetch origin ulti-main
 
           if [ -z "${ULTI_HASH}"]; then
-            echo "${{ matrix.repos.fork }}=Error fetching upstream hash." >> "$GITHUB_OUTPUT"
+            echo "Error fetching upstream hash."
           elif [ "$(git branch "ulti-main" --contains="${ULTI_HASH}")" ]; then
-            echo "${{ matrix.repos.fork }}=No new commits." >> "$GITHUB_OUTPUT"
+            echo "No new commits."
           else
-            echo "${{ matrix.repos.fork }}=New commits upstream!" >> "$GITHUB_OUTPUT"
 
-            git pull --no-edit --ff-only ulti "${{ matrix.repos.branch }}"
+            git pull --no-edit --ff-only ulti "${{ inputs.branch }}"
             git push origin ulti-main
             CS=$?
 
             if [ "${CS}" -ne 0 ]; then
-              echo "${{ matrix.repos.fork }}=Error pushing to origin." >> "$GITHUB_OUTPUT"
+              echo "Error pushing to origin."
             fi
           fi
-
-  post-update-results:
-    name: Post Update Results
-    runs-on: ubuntu-latest
-    needs: [update-lulzbot-forks]
-    steps:
-      - name: Post Results
-        run: echo ' ${{ toJSON(needs.update-lulzbot-forks.outputs) }}'
