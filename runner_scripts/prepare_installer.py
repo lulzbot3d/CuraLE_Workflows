@@ -25,7 +25,7 @@ def set_installer_filename(args):
     variables_output.write(f"INSTALLER_FILENAME={installer_filename}\n")
     variables_output.write(f"CURA_VERSION={CuraVersion.CuraVersion}\n")
     variables_output.write(f"CURA_VERSION_FULL={CuraVersion.CuraVersionFull}\n")
-    variables_output.write(f"CURA_APP_NAME={CuraVersion.CuraAppDisplayName}\n")
+    variables_output.write(f"CURA_APP_NAME={CuraVersion.CuraAppName}\n")
 
     summary_output = sys.stdout
     if args.summary_output is not None:
