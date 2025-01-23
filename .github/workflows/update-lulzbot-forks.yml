@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   update-lulzbot-forks:
-    name: Upload package recipe
+    name: Update LulzBot Forked Repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
