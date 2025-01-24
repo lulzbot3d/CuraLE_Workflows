@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Setup the build environment
         uses: lulzbot3d/CuraLE_Workflows/.github/actions/setup-build-environment@main
+        with:
+          install_system_dependencies: true
 
       - uses: greguintow/get-diff-action@v7
         with:
@@ -24,8 +26,8 @@ jobs:
       - name: Build application and tests
         run: |
           source build/Release/generators/conanbuild.sh
-          cmake --preset release
-          cmake --build --preset release
+          cmake --preset conan-release
+          cmake --build --preset conan-release
 
       - name: Create results directory
         run: mkdir linter-result
