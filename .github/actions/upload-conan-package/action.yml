@@ -8,10 +8,6 @@ inputs:
     required: false
     default: "*"
     type: string
-  private_data:
-    required: false
-    default: false
-    type: boolean
 
 
 runs:
@@ -25,8 +21,4 @@ runs:
             PATH+=":$pydir:$pydir/Scripts"
           fi
 
-          if [ "${{ inputs.private_data }}" == "true" ]; then
-            conan upload "${{ inputs.package_name }}" -r cura-le-private-conan2 -c
-          else
-            conan upload "${{ inputs.package_name }}" -r cura-le-conan2 -c
-          fi
+          python CuraLE_Workflows/runner_scripts/upload_conan_package.py "${{ inputs.package_name }}"
