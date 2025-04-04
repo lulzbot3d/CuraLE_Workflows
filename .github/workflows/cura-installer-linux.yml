@@ -37,7 +37,7 @@ on:
       operating_system:
         description: 'OS'
         required: true
-        default: 'ubuntu-22.04'
+        default: 'ubuntu-latest'
         type: string
 
       private_data:

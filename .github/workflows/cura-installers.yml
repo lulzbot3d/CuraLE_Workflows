@@ -53,7 +53,7 @@ jobs:
       conan_args: ${{ inputs.conan_args }}
       enterprise: ${{ inputs.enterprise }}
       staging: ${{ inputs.staging }}
-      operating_system: ubuntu-22.04
+      operating_system: ubuntu-latest
       private_data: ${{ inputs.private_data }}
     secrets: inherit
 
@@ -67,7 +67,7 @@ jobs:
       enterprise: ${{ inputs.enterprise }}
       staging: ${{ inputs.staging }}
       architecture: X64
-      operating_system: macos-latest
+      operating_system: macos-13
       private_data: ${{ inputs.private_data }}
     secrets: inherit
 

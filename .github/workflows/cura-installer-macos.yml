@@ -43,7 +43,7 @@ on:
       operating_system:
         description: 'OS'
         required: true
-        default: 'self-hosted-ARM64'
+        default: 'macos-latest'
         type: string
 
       private_data:
