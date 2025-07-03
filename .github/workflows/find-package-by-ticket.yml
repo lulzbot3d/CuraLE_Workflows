@@ -72,7 +72,7 @@ jobs:
         with:
           script: |
             const jiraTicket = '${{ steps.validate_input.outputs.jira_ticket_number }}';
-            const conanPkgRef = `*/*@lulzbot /${jiraTicket}`;
+            const conanPkgRef = `*/*@lulzbot/${jiraTicket}`;
             console.log(`Searching for Conan packages matching pattern: ${conanPkgRef}`);
 
             let searchResult = '';
