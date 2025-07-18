@@ -32,7 +32,6 @@ on:
         options:
           - CuraLE
           - UraniumLE
-          - CuraLE_Resources
           - FDM_MaterialsLE
           - CuraLE_Binary_Data
           - CuraEngineLE
@@ -42,6 +41,7 @@ on:
           - libArcusLE
           - libnest2dLE
           - libSavitarLE
+          - libUvulaLE
           - pyArcusLE
           - pynest2dLE
           - pySavitarLE
