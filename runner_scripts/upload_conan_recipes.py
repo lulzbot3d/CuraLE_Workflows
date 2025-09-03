@@ -40,14 +40,19 @@ def upload_changed_recipes(args):
         for version, data in versions.items():
             conanfile = config_file.parent.joinpath(data["folder"], "conanfile.py")
 
-            conan_export = ["conan", "export", conanfile, "--name", name, "--version", version, "-f", "json"]
+            conan_export = ["conan", "export", str(conanfile), "--name", name, "--version", version, "-f", "json"]
 
             if actual_user != "":
                 conan_export += ["--user", actual_user]
             if actual_channel != "":
                 conan_export += ["--channel", actual_channel]
 
-            export_output = subprocess.run(conan_export, capture_output=True, check = True).stdout
+            try:
+                export_output = subprocess.run(conan_export, capture_output=True, check = True).stdout
+            except subprocess.CalledProcessError as ex:
+                print(ex.stdout)
+                print(ex.stderr)
+                raise ex
             package_reference = json.loads(export_output)["reference"]
             subprocess.run(["conan", "upload", package_reference, "-r", args.remote, "-c"], check = True)
             packages.append(package_reference.split("#")[0])
