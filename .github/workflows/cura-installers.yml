@@ -28,6 +28,10 @@ on:
         required: false
         default: false
         type: boolean
+      lockfile_repository_branch:
+        required: false
+        default: ''
+        type: string
 
 
 jobs:
@@ -55,6 +59,7 @@ jobs:
       staging: ${{ inputs.staging }}
       operating_system: ubuntu-latest
       private_data: ${{ inputs.private_data }}
+      lockfile_repository_branch: ${{ inputs.lockfile_repository_branch }}
     secrets: inherit
 
   macos-installer:
@@ -69,6 +74,7 @@ jobs:
       architecture: X64
       operating_system: macos-13
       private_data: ${{ inputs.private_data }}
+      lockfile_repository_branch: ${{ inputs.lockfile_repository_branch }}
     secrets: inherit
 
   macos-arm-installer:
@@ -83,4 +89,5 @@ jobs:
       architecture: ARM64
       operating_system: macos-latest
       private_data: ${{ inputs.private_data }}
+      lockfile_repository_branch: ${{ inputs.lockfile_repository_branch }}
     secrets: inherit
