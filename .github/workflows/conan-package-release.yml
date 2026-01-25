@@ -38,6 +38,7 @@ on:
           - CuraEngineLE
           - CuraEngineLE_gRPC_Definitions
           - CuraEngineLE_Plugin_Gradual_Flow
+          - CuraFormulaeEngine
           - SynsepalumDulcificumLE
           - libArcusLE
           - libnest2dLE
